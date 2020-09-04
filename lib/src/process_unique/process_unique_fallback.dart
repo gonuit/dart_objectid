@@ -3,7 +3,7 @@ import 'package:objectid/src/process_unique/process_unique.dart';
 
 class FallbackProcessUnique implements ProcessUnique {
   @override
-  int get value {
+  int getValue() {
     var value = 0;
 
     math.Random random;

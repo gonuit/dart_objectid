@@ -6,7 +6,7 @@ import 'package:objectid/src/process_unique/process_unique.dart';
 class ProcessUniqueWeb implements ProcessUnique {
   /// 5 bytes
   @override
-  int get value {
+  int getValue() {
     var value = 0;
 
     /// Get's process unique by combination of timestamp, hostname and random value

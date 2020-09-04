@@ -1,8 +1,6 @@
 import 'package:objectid/objectid.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
 
-const _numberOfTests = 1000;
-
 class ObjectIdBenchmark extends BenchmarkBase {
   const ObjectIdBenchmark() : super('ObjectId() → ');
 
@@ -12,9 +10,7 @@ class ObjectIdBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < _numberOfTests; i++) {
-      ObjectId();
-    }
+    ObjectId();
   }
 }
 
@@ -29,9 +25,7 @@ class FromHexStringBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < _numberOfTests; i++) {
-      ObjectId.fromHexString(hexString);
-    }
+    ObjectId.fromHexString(hexString);
   }
 }
 
@@ -46,9 +40,7 @@ class HexStringBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < _numberOfTests; i++) {
-      _objectId.hexString;
-    }
+    _objectId.hexString;
   }
 
   @override
@@ -69,9 +61,7 @@ class EqualityOperatorBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < _numberOfTests; i++) {
-      _objectIdA == _objectIdB;
-    }
+    _objectIdA == _objectIdB;
   }
 
   @override
@@ -93,9 +83,7 @@ class GenerationTimeBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < _numberOfTests; i++) {
-      _objectIdA.generationTime;
-    }
+    _objectIdA.timestamp;
   }
 
   @override
@@ -104,10 +92,32 @@ class GenerationTimeBenchmark extends BenchmarkBase {
   }
 }
 
+class HashCodeBenchmark extends BenchmarkBase {
+  HashCodeBenchmark() : super('ObjectId.hashCode → ');
+
+  static void main() {
+    HashCodeBenchmark().report();
+  }
+
+  ObjectId _id;
+
+  @override
+  void run() {
+    _id.hashCode;
+  }
+
+  @override
+  void setup() {
+    _id = ObjectId();
+  }
+}
+
 void main(List<String> arguments) async {
+  print(DateTime.now().microsecondsSinceEpoch);
   GenerationTimeBenchmark.main();
   ObjectIdBenchmark.main();
   FromHexStringBenchmark.main();
   EqualityOperatorBenchmark.main();
   HexStringBenchmark.main();
+  HashCodeBenchmark.main();
 }
