@@ -1,7 +1,7 @@
 import 'dart:io' as io;
 import 'dart:math' as math;
 
-import './process_unique.dart';
+import 'package:objectid/src/process_unique/process_unique.dart';
 
 class ProcessUniqueIo implements ProcessUnique {
   /// 5 bytes

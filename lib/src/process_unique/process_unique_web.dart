@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:html' as web;
 
-import './process_unique.dart';
+import 'package:objectid/src/process_unique/process_unique.dart';
 
 class ProcessUniqueWeb implements ProcessUnique {
   /// 5 bytes

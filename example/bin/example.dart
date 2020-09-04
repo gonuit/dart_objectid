@@ -1,6 +1,8 @@
 import 'package:objectid/objectid.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
 
+const _numberOfTests = 1000;
+
 class ObjectIdBenchmark extends BenchmarkBase {
   const ObjectIdBenchmark() : super('ObjectId() → ');
 
@@ -10,7 +12,7 @@ class ObjectIdBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < 10000; i++) {
+    for (var i = 0; i < _numberOfTests; i++) {
       ObjectId();
     }
   }
@@ -23,10 +25,12 @@ class FromHexStringBenchmark extends BenchmarkBase {
     FromHexStringBenchmark().report();
   }
 
+  static const hexString = '5f5173058e87a402f8e678e0';
+
   @override
   void run() {
-    for (var i = 0; i < 10000; i++) {
-      ObjectId.fromHexString('5f5173058e87a402f8e678e0');
+    for (var i = 0; i < _numberOfTests; i++) {
+      ObjectId.fromHexString(hexString);
     }
   }
 }
@@ -42,7 +46,7 @@ class HexStringBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < 10000; i++) {
+    for (var i = 0; i < _numberOfTests; i++) {
       _objectId.hexString;
     }
   }
@@ -65,7 +69,7 @@ class EqualityOperatorBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < 10000; i++) {
+    for (var i = 0; i < _numberOfTests; i++) {
       _objectIdA == _objectIdB;
     }
   }
@@ -89,7 +93,7 @@ class GenerationTimeBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    for (var i = 0; i < 10000; i++) {
+    for (var i = 0; i < _numberOfTests; i++) {
       _objectIdA.generationTime;
     }
   }
@@ -97,19 +101,10 @@ class GenerationTimeBenchmark extends BenchmarkBase {
   @override
   void setup() {
     _objectIdA = ObjectId();
-    // print(_objectIdA.hexString + _objectIdB.hexString);
   }
 }
 
 void main(List<String> arguments) async {
-  final a = ObjectId();
-  print('a: ${a.hexString}');
-  final b = ObjectId.fromHexString(a.hexString);
-  print('b.from(a.hexString): ${b.hexString}');
-  print('a == b: ${b == a}');
-  print('a.generationTime: ${a.generationTime.toLocal()}');
-  print('c.isValid(): ${ObjectId.isValid('5f51633ed894cc8c0d8g3495')}');
-
   GenerationTimeBenchmark.main();
   ObjectIdBenchmark.main();
   FromHexStringBenchmark.main();
