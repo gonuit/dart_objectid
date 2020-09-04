@@ -60,7 +60,9 @@ class ObjectId {
     _bytes[9] = (counter >> 16) & 0xff;
   }
 
-  /// Generate ObjectId using current timestamp.
+  /// ### Creates ObjectId.
+  ///  
+  /// ObjectId structure:
   /// ```
   ///   4 byte timestamp    5 byte process unique   3 byte counter
   /// |<----------------->|<---------------------->|<------------>|

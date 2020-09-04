@@ -1,12 +1,8 @@
 name: objectid
-description: A new Flutter package project.
-version: 0.0.1
-author:
-# homepage:
+description: Blazing fast, cross-platform ObjectId implementation for the dart language.
+version: 0.1.0-dev.1
+homepage: https://github.com/gonuit/dart_objectid
+repository: https://github.com/gonuit/dart_objectid
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
-# dependencies:
-
-# dev_dependencies:
-
