@@ -103,11 +103,11 @@ class GenerationTimeBenchmark extends BenchmarkBase {
 
 void main(List<String> arguments) async {
   final a = ObjectId();
-  print("a: ${a.hexString}");
+  print('a: ${a.hexString}');
   final b = ObjectId.fromHexString(a.hexString);
-  print("b.from(a.hexString): ${b.hexString}");
-  print("a == b: ${b == a}");
-  print(a.generationTime.toLocal());
+  print('b.from(a.hexString): ${b.hexString}');
+  print('a == b: ${b == a}');
+  print('a.generationTime: ${a.generationTime.toLocal()}');
   print('c.isValid(): ${ObjectId.isValid('5f51633ed894cc8c0d8g3495')}');
 
   GenerationTimeBenchmark.main();

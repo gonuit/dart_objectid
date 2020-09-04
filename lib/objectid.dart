@@ -11,7 +11,7 @@ class ObjectId {
   static const _objectIdHexStringLength = _objectIdBytesLength * 2;
 
   /// 5 bytes
-  static int _processUnique = ProcessUnique().value;
+  static final int _processUnique = ProcessUnique().value;
 
   /// ObjectId counter that will be used for ObjectId generation.
   ///
@@ -29,8 +29,8 @@ class ObjectId {
   DateTime get generationTime {
     if (_generationTime != null) return _generationTime;
 
-    int secondsSinceEpoch = 0;
-    for (int x = 3, y = 0; x >= 0; x--, y++) {
+    var secondsSinceEpoch = 0;
+    for (var x = 3, y = 0; x >= 0; x--, y++) {
       secondsSinceEpoch += _bytes[x] * math.pow(256, y);
     }
 
@@ -61,7 +61,7 @@ class ObjectId {
   }
 
   /// ### Creates ObjectId.
-  ///  
+  ///
   /// ObjectId structure:
   /// ```
   ///   4 byte timestamp    5 byte process unique   3 byte counter
@@ -74,9 +74,10 @@ class ObjectId {
 
   factory ObjectId.fromHexString(String hexString) {
     ArgumentError.checkNotNull(hexString, 'hexString');
-    if (hexString.length != _objectIdHexStringLength)
+    if (hexString.length != _objectIdHexStringLength) {
       throw ArgumentError.value(
           hexString, 'hexString', 'Provided hexString has wrong length.');
+    }
 
     final secondsSinceEpoch = int.parse(hexString.substring(0, 8), radix: 16);
     final timestamp =
@@ -107,22 +108,24 @@ class ObjectId {
   /// Returns hex string for current [ObjectId].
   String get hexString {
     if (_hexString == null) {
-      _hexString = "";
-      for (int i = 0; i < _bytes.length; i++)
+      _hexString = '';
+      for (var i = 0; i < _bytes.length; i++) {
         _hexString += _bytes[i].toRadixString(16).padLeft(2, '0');
+      }
     }
 
     return _hexString;
   }
 
+  @override
   bool operator ==(Object other) {
-    if (other.runtimeType != this.runtimeType) return false;
-    for (int i = 0; i < this._bytes.length; i++) {
-      if ((other as ObjectId)._bytes[i] != this._bytes[i]) return false;
+    if (other.runtimeType != runtimeType) return false;
+    for (var i = 0; i < _bytes.length; i++) {
+      if ((other as ObjectId)._bytes[i] != _bytes[i]) return false;
     }
     return true;
   }
 
   @override
-  String toString() => "ObjectId($hexString)";
+  String toString() => '$runtimeType($hexString)';
 }
