@@ -1,0 +1,25 @@
+import 'dart:math' as math;
+import 'dart:html' as web;
+
+import './process_unique.dart';
+
+class ProcessUniqueWeb implements ProcessUnique {
+  /// 5 bytes
+  int get value {
+    int value = 0;
+
+    /// Get's process unique by combination of timestamp, hostname and random value
+    final random = math.Random(DateTime.now().millisecondsSinceEpoch ^
+        web.window.location.hostname.codeUnits
+            .reduce((value, element) => value + element) ^
+        math.Random().nextInt(0xffffff));
+
+    for (int i = 0; i < 10; i++) {
+      value += random.nextInt(256) * math.pow(16, i);
+    }
+
+    return value;
+  }
+}
+
+ProcessUnique getProcessUnique() => ProcessUniqueWeb();
