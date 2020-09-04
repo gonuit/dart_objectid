@@ -22,8 +22,10 @@ class ObjectId {
   /// ObjectId counter cannot be larger than 3 bits.
   static int _getCounter() => (_counter = (_counter + 1) % _maxCounterValue);
 
-  /// ObjectId bytes
   final Uint8List _bytes = Uint8List(_objectIdBytesLength);
+
+  /// ObjectId bytes.
+  Uint8List get bytes => _bytes;
 
   DateTime _generationTime;
   DateTime get generationTime {
@@ -87,6 +89,22 @@ class ObjectId {
     final counter = int.parse(hexString.substring(18, 24), radix: 16);
 
     return ObjectId._(timestamp, processUnique, counter);
+  }
+
+  /// Creates ObjectId from bytes.
+  ObjectId.fromBytes(List<int> bytes) {
+    ArgumentError.checkNotNull(bytes, 'bytes');
+    if (bytes.length != _objectIdBytesLength) {
+      throw ArgumentError.value(
+        bytes,
+        'bytes',
+        'Bytes array should has length equal to $_objectIdBytesLength',
+      );
+    }
+
+    for (var i = 0; i < _bytes.length; i++) {
+      _bytes[i] = bytes[i];
+    }
   }
 
   /// Whether hexString is a valid ObjectId
