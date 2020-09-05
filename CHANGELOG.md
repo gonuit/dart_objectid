@@ -1,3 +1,5 @@
+## [1.0.0] - 09/05/2020 Stable version.
+- Added readme documentation
 ## [0.2.0] - 09/05/2020
 - Added unit tests
 - Restructured projects
