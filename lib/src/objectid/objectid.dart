@@ -1,8 +1,8 @@
-import 'dart:typed_data';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
-import 'package:objectid/src/hash/murmurHash2.dart';
-import 'package:objectid/src/process_unique/process_unique.dart';
+import '../hash/murmur_hash_2.dart';
+import '../process_unique/process_unique.dart';
 
 /// ## ObjectId
 /// This class allows you to create and manipulate bson ObjectIds.
@@ -11,7 +11,9 @@ import 'package:objectid/src/process_unique/process_unique.dart';
 /// ```dart
 /// final id = ObjectId();
 /// final id2 = ObjectId.fromHexString('5f527e9b350aa5f9709daf16');
-/// final id3 = ObjectId.fromBytes([95, 82, 126, 187, 124, 177, 57, 83, 165, 119, 211, 48]);
+/// final id3 = ObjectId.fromBytes(
+///   [95, 82, 126, 187, 124, 177, 57, 83, 165, 119, 211, 48],
+/// );
 /// final id4 = ObjectId.fromValues(timestamp, processUnique, counter);
 /// ```
 class ObjectId {
@@ -38,7 +40,8 @@ class ObjectId {
 
   DateTime _timestamp;
 
-  /// Returns the generation date (accurate up to the second) that this ObjectId was generated.
+  /// Returns the generation date (accurate up to the second) that this
+  /// ObjectId was generated.
   DateTime get timestamp {
     if (_timestamp != null) return _timestamp;
 
@@ -84,7 +87,8 @@ class ObjectId {
   }
 
   /// ### Creates ObjectId from provided timestamp.
-  /// Only timestamp segment is set while the rest of the ObjectId is zeroed out.
+  /// Only timestamp segment is set while the rest of the ObjectId is
+  /// zeroed out.
   ///
   /// Example:
   /// ```
@@ -186,7 +190,7 @@ class ObjectId {
       int.parse(hexString.substring(0, 8), radix: 16);
       int.parse(hexString.substring(8, 18), radix: 16);
       int.parse(hexString.substring(18, 24), radix: 16);
-    } catch (err) {
+    } on FormatException {
       return false;
     }
     return true;
@@ -207,6 +211,7 @@ class ObjectId {
   }
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
     for (var i = 0; i < _bytes.length; i++) {
@@ -219,6 +224,7 @@ class ObjectId {
   /// Prevents multiple calculations of the same value.
   int _hashCode;
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _hashCode ??= murmurHash2(bytes, runtimeType.hashCode);
 
   @override

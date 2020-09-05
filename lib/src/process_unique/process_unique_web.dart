@@ -1,15 +1,17 @@
-import 'dart:math' as math;
 import 'dart:html' as web;
+import 'dart:math' as math;
 
-import 'package:objectid/src/process_unique/process_unique.dart';
+import '../process_unique/process_unique.dart';
 
+/// Web Process unique implementation
 class ProcessUniqueWeb implements ProcessUnique {
   /// 5 bytes
   @override
   int getValue() {
     var value = 0;
 
-    /// Get's process unique by combination of timestamp, hostname and random value
+    /// Get's process unique by combination of timestamp, hostname
+    /// and random value
     final random = math.Random(DateTime.now().millisecondsSinceEpoch ^
         web.window.location.hostname.codeUnits
             .reduce((value, element) => value + element) ^
@@ -23,4 +25,5 @@ class ProcessUniqueWeb implements ProcessUnique {
   }
 }
 
+/// Process unique web factory method
 ProcessUnique getProcessUnique() => ProcessUniqueWeb();

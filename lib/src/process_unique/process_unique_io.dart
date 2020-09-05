@@ -1,8 +1,9 @@
 import 'dart:io' as io;
 import 'dart:math' as math;
 
-import 'package:objectid/src/process_unique/process_unique.dart';
+import '../process_unique/process_unique.dart';
 
+/// IO Process unique implementation
 class ProcessUniqueIo implements ProcessUnique {
   /// 5 bytes
   @override
@@ -21,4 +22,5 @@ class ProcessUniqueIo implements ProcessUnique {
   }
 }
 
+/// Process unique io factory method
 ProcessUnique getProcessUnique() => ProcessUniqueIo();

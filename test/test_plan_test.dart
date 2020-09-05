@@ -13,8 +13,9 @@ void createObjectId(SendPort sendPort) {
 
 void main() {
   group(
-      'Ensure that the Timestamp field is represented as an unsigned 32-bit representing the number of seconds since the Epoch for the Timestamp values',
-      () {
+      'Ensure that the Timestamp field is represented as an unsigned '
+      '32-bit representing the number of seconds since the Epoch for '
+      'the Timestamp values', () {
     test('0x00000000: To match "Jan 1st, 1970 00:00:00 UTC".', () {
       final id = ObjectId.fromHexString('000000000000000000000000');
       expect(id.timestamp.toUtc().year, equals(1970));
@@ -97,7 +98,7 @@ void main() {
     final isolate = await Isolate.spawn(createObjectId, receivePort.sendPort);
     final completer = Completer<ObjectId>();
     receivePort.listen((data) {
-      completer.complete(data);
+      completer.complete(data as ObjectId);
     });
     final idFromIsolate = await completer.future;
     isolate.kill();
