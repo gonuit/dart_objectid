@@ -1,3 +1,5 @@
+## [1.1.1] - 09/05/2020 Stable version.
+- Use StringBuffer instead of String class for hexString generation (almost 5 times faster generation of hexStrings).
 ## [1.1.0] - 09/05/2020 Stable version.
 - Migrate package to effective dart style.
 - 100% tests coverage.

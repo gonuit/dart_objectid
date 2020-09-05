@@ -67,8 +67,8 @@ class ObjectId {
   /// {@endtemplate}
   ///
   ObjectId() {
-    _initialize(DateTime.now().millisecondsSinceEpoch, _processUnique,
-        ObjectId._getCounter());
+    _initialize(
+        DateTime.now().millisecondsSinceEpoch, _processUnique, _getCounter());
   }
 
   /// ### Creates ObjectId from provided values.
@@ -130,6 +130,9 @@ class ObjectId {
 
     final processUnique = int.parse(hexString.substring(8, 18), radix: 16);
     final counter = int.parse(hexString.substring(18, 24), radix: 16);
+
+    /// cache this value
+    _hexString = hexString;
 
     _initialize(millisecondsSinceEpoch, processUnique, counter);
   }
@@ -201,10 +204,11 @@ class ObjectId {
   /// Returns hex string for current [ObjectId].
   String get hexString {
     if (_hexString == null) {
-      _hexString = '';
+      final _buffer = StringBuffer();
       for (var i = 0; i < _bytes.length; i++) {
-        _hexString += _bytes[i].toRadixString(16).padLeft(2, '0');
+        _buffer.write(_bytes[i].toRadixString(16).padLeft(2, '0'));
       }
+      _hexString = _buffer.toString();
     }
 
     return _hexString;
