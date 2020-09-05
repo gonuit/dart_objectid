@@ -18,7 +18,7 @@ Why this package?
 
 ## Getting started.
 1. Depend on it.
-```
+```yml
 dependencies:
   objectid: 1.1.0
 ```
