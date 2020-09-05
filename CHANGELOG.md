@@ -1,3 +1,9 @@
+## [1.1.0] - 09/05/2020 Stable version.
+- Migrate package to effective dart style.
+- 100% tests coverage.
+- Improve readme docs.
+  - Added badges.
+  - Added benchmark section.
 ## [1.0.0] - 09/05/2020 Stable version.
 - Added readme documentation
 ## [0.2.0] - 09/05/2020

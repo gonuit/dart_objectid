@@ -168,13 +168,16 @@ class FromTimestampBenchmark extends BenchmarkBase {
 }
 
 void main(List<String> arguments) async {
-  FromTimestampBenchmark.main();
-  FromValuesBenchmark.main();
-  FromBytesBenchmark.main();
+  print('Constructors:');
   ObjectIdBenchmark.main();
   FromHexStringBenchmark.main();
-  EqualityOperatorBenchmark.main();
+  FromBytesBenchmark.main();
+  FromValuesBenchmark.main();
+  FromTimestampBenchmark.main();
+  print('Properties:');
   HexStringBenchmark.main();
   TimestampBenchmark.main();
   HashCodeBenchmark.main();
+  print('Operators:');
+  EqualityOperatorBenchmark.main();
 }
