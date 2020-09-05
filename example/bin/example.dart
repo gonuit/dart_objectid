@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:objectid/objectid.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
 
@@ -72,11 +74,11 @@ class EqualityOperatorBenchmark extends BenchmarkBase {
   }
 }
 
-class GenerationTimeBenchmark extends BenchmarkBase {
-  GenerationTimeBenchmark() : super('ObjectId.generationTime → ');
+class TimestampBenchmark extends BenchmarkBase {
+  TimestampBenchmark() : super('ObjectId.timestamp → ');
 
   static void main() {
-    GenerationTimeBenchmark().report();
+    TimestampBenchmark().report();
   }
 
   ObjectId _objectIdA;
@@ -112,12 +114,67 @@ class HashCodeBenchmark extends BenchmarkBase {
   }
 }
 
+class FromBytesBenchmark extends BenchmarkBase {
+  FromBytesBenchmark() : super('ObjectId.fromBytes() → ');
+
+  static void main() {
+    FromBytesBenchmark().report();
+  }
+
+  Uint8List _bytes;
+  @override
+  void run() {
+    ObjectId.fromBytes(_bytes);
+  }
+
+  @override
+  void setup() {
+    _bytes = Uint8List.fromList(
+        [95, 82, 205, 121, 180, 195, 28, 88, 32, 47, 183, 78]);
+  }
+}
+
+class FromValuesBenchmark extends BenchmarkBase {
+  FromValuesBenchmark() : super('ObjectId.fromValues() → ');
+
+  static void main() {
+    FromValuesBenchmark().report();
+  }
+
+  @override
+  void run() {
+    ObjectId.fromValues(123456, 123456, 123456);
+  }
+}
+
+class FromTimestampBenchmark extends BenchmarkBase {
+  FromTimestampBenchmark() : super('ObjectId.fromTimestamp() → ');
+
+  static void main() {
+    FromTimestampBenchmark().report();
+  }
+
+  DateTime _timestamp;
+
+  @override
+  void run() {
+    ObjectId.fromTimestamp(_timestamp);
+  }
+
+  @override
+  void setup() {
+    _timestamp = DateTime.now();
+  }
+}
+
 void main(List<String> arguments) async {
-  print(DateTime.now().microsecondsSinceEpoch);
-  GenerationTimeBenchmark.main();
+  FromTimestampBenchmark.main();
+  FromValuesBenchmark.main();
+  FromBytesBenchmark.main();
   ObjectIdBenchmark.main();
   FromHexStringBenchmark.main();
   EqualityOperatorBenchmark.main();
   HexStringBenchmark.main();
+  TimestampBenchmark.main();
   HashCodeBenchmark.main();
 }

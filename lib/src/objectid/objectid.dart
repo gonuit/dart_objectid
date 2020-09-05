@@ -104,7 +104,7 @@ class ObjectId {
   }
 
   /// ### Creates ObjectId from hex string.
-  /// Can be helpful for mapping hext strings returned from
+  /// Can be helpful for mapping hex strings returned from
   /// API / mongodb to ObjectId instances.
   ///
   /// Example usage:
@@ -173,7 +173,7 @@ class ObjectId {
       );
     }
 
-    for (var i = 0; i < _bytes.length; i++) {
+    for (var i = 0; i < _objectIdBytesLength; i++) {
       _bytes[i] = bytes[i];
     }
   }
