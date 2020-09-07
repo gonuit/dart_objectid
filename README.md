@@ -140,7 +140,7 @@ Benchmark hardware/software: Intel i7 3770k, 16GB RAM DDR3, Windows 10.
   
 ```
 ObjectId() => 0.58338475488028056 us.
-ObjectId.fromHexString(hexString) => 3.6401499394306052 us.
+ObjectId.fromHexString(hexString) => 1.5431443397313450 us.
 ObjectId.fromBytes(bytes) => 0.58338475488028056 us.
 ObjectId.fromValues(millisecondsSinceEpoch, processUnique, counter) => 0.50956103355082625 us.
 ObjectId.fromTimestamp(timestamp) => 0.47020163256147746 us.
