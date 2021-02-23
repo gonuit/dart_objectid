@@ -38,22 +38,6 @@ class ObjectId {
   /// ObjectId bytes.
   Uint8List get bytes => _bytes;
 
-  DateTime? _timestamp;
-
-  /// Returns the generation date (accurate up to the second) that this
-  /// ObjectId was generated.
-  DateTime get timestamp {
-    if (_timestamp != null) return _timestamp!;
-
-    var secondsSinceEpoch = 0;
-    for (var x = 3, y = 0; x >= 0; x--, y++) {
-      secondsSinceEpoch += (_bytes[x] * math.pow(256, y)).round();
-    }
-
-    return _timestamp =
-        DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch * 1000);
-  }
-
   /// ### Creates ObjectId.
   ///
   /// {@template objectid.structure}
@@ -68,7 +52,10 @@ class ObjectId {
   ///
   ObjectId() {
     _initialize(
-        DateTime.now().millisecondsSinceEpoch, _processUnique, _getCounter());
+      DateTime.now().millisecondsSinceEpoch,
+      _processUnique,
+      _getCounter(),
+    );
   }
 
   /// ### Creates ObjectId from provided values.
@@ -185,18 +172,20 @@ class ObjectId {
     }
   }
 
-  /// Whether hexString is a valid ObjectId
-  static bool isValid(String hexString) {
-    try {
-      if (hexString.length != 24) return false;
+  DateTime? _timestamp;
 
-      int.parse(hexString.substring(0, 8), radix: 16);
-      int.parse(hexString.substring(8, 18), radix: 16);
-      int.parse(hexString.substring(18, 24), radix: 16);
-    } on FormatException {
-      return false;
+  /// Returns the generation date (accurate up to the second) that this
+  /// ObjectId was generated.
+  DateTime get timestamp {
+    if (_timestamp != null) return _timestamp!;
+
+    var secondsSinceEpoch = 0;
+    for (var x = 3, y = 0; x >= 0; x--, y++) {
+      secondsSinceEpoch += (_bytes[x] * math.pow(256, y)).round();
     }
-    return true;
+
+    return _timestamp =
+        DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch * 1000);
   }
 
   String? _hexString;
@@ -220,6 +209,20 @@ class ObjectId {
     if (other.runtimeType != runtimeType) return false;
     for (var i = 0; i < _bytes.length; i++) {
       if ((other as ObjectId)._bytes[i] != _bytes[i]) return false;
+    }
+    return true;
+  }
+
+  /// Whether hexString is a valid ObjectId
+  static bool isValid(String hexString) {
+    try {
+      if (hexString.length != 24) return false;
+
+      int.parse(hexString.substring(0, 8), radix: 16);
+      int.parse(hexString.substring(8, 18), radix: 16);
+      int.parse(hexString.substring(18, 24), radix: 16);
+    } on FormatException {
+      return false;
     }
     return true;
   }
