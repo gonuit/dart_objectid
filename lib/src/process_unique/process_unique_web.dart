@@ -13,12 +13,13 @@ class ProcessUniqueWeb implements ProcessUnique {
     /// Get's process unique by combination of timestamp, hostname
     /// and random value
     final random = math.Random(DateTime.now().millisecondsSinceEpoch ^
-        web.window.location.hostname.codeUnits
+        (web.window.location.hostname ?? "")
+            .codeUnits
             .reduce((value, element) => value + element) ^
         math.Random().nextInt(0xffffff));
 
     for (var i = 0; i < 10; i++) {
-      value += random.nextInt(256) * math.pow(16, i);
+      value += (random.nextInt(256) * math.pow(16, i)).round();
     }
 
     return value;

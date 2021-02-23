@@ -38,16 +38,16 @@ class ObjectId {
   /// ObjectId bytes.
   Uint8List get bytes => _bytes;
 
-  DateTime _timestamp;
+  DateTime? _timestamp;
 
   /// Returns the generation date (accurate up to the second) that this
   /// ObjectId was generated.
   DateTime get timestamp {
-    if (_timestamp != null) return _timestamp;
+    if (_timestamp != null) return _timestamp!;
 
     var secondsSinceEpoch = 0;
     for (var x = 3, y = 0; x >= 0; x--, y++) {
-      secondsSinceEpoch += _bytes[x] * math.pow(256, y);
+      secondsSinceEpoch += (_bytes[x] * math.pow(256, y)).round();
     }
 
     return _timestamp =
@@ -188,7 +188,7 @@ class ObjectId {
   /// Whether hexString is a valid ObjectId
   static bool isValid(String hexString) {
     try {
-      if (hexString?.length != 24) return false;
+      if (hexString.length != 24) return false;
 
       int.parse(hexString.substring(0, 8), radix: 16);
       int.parse(hexString.substring(8, 18), radix: 16);
@@ -199,7 +199,7 @@ class ObjectId {
     return true;
   }
 
-  String _hexString;
+  String? _hexString;
 
   /// Returns hex string for current [ObjectId].
   String get hexString {
@@ -211,7 +211,7 @@ class ObjectId {
       _hexString = _buffer.toString();
     }
 
-    return _hexString;
+    return _hexString!;
   }
 
   @override
@@ -226,7 +226,7 @@ class ObjectId {
 
   /// Caches [hashCode].
   /// Prevents multiple calculations of the same value.
-  int _hashCode;
+  int? _hashCode;
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _hashCode ??= murmurHash2(bytes, runtimeType.hashCode);

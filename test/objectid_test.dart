@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:matcher/matcher.dart';
 import 'package:objectid/objectid.dart';
 import 'package:test/test.dart';
-import 'package:matcher/matcher.dart';
 
 class TestObjectId extends ObjectId {
   TestObjectId.fromHexString(String hexString) : super.fromHexString(hexString);
@@ -25,10 +25,6 @@ void main() {
       final idFromBytes = ObjectId.fromBytes(bytes);
 
       expect(
-        () => ObjectId.fromBytes(null),
-        throwsA(TypeMatcher<ArgumentError>()),
-      );
-      expect(
         () => ObjectId.fromBytes([1, 2]),
         throwsA(TypeMatcher<ArgumentError>()),
       );
@@ -44,10 +40,6 @@ void main() {
       final hexString = id.hexString;
       final idFromHexString = ObjectId.fromHexString(hexString);
 
-      expect(
-        () => ObjectId.fromHexString(null),
-        throwsA(TypeMatcher<ArgumentError>()),
-      );
       expect(
         () => ObjectId.fromHexString("123456"),
         throwsA(TypeMatcher<ArgumentError>()),
@@ -133,7 +125,6 @@ void main() {
       expect(ObjectId.isValid('ffffffffffffffffffff%fff'), isFalse);
       expect(ObjectId.isValid('112123123123123123123.23'), isFalse);
       expect(ObjectId.isValid('gggggggggggggggggggggggg'), isFalse);
-      expect(ObjectId.isValid(null), isFalse);
       expect(ObjectId.isValid(''), isFalse);
     });
 

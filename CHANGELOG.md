@@ -1,3 +1,5 @@
+## [2.0.0-nullsafety.0] - 2020/02/23 - Null safety
+- Initial move towards nullsafety
 ## [1.1.1] - 09/05/2020 Stable version.
 - Use StringBuffer instead of String class for hexString generation (almost 5 times faster generation of hexStrings).
 ## [1.1.0] - 09/05/2020 Stable version.
