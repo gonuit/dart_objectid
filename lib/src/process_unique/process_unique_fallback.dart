@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import '../process_unique/process_unique.dart';
 
 /// Fallback Process unique implementation
@@ -16,7 +17,7 @@ class FallbackProcessUnique implements ProcessUnique {
     }
 
     for (var i = 0; i < 10; i++) {
-      value += random.nextInt(256) * math.pow(16, i);
+      value += random.nextInt(256) * math.pow(16, i).toInt();
     }
 
     return value;

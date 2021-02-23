@@ -15,7 +15,7 @@ class ProcessUniqueIo implements ProcessUnique {
         math.Random((DateTime.now().millisecondsSinceEpoch ^ io.pid));
 
     for (var i = 0; i < 10; i++) {
-      value += random.nextInt(256) * math.pow(16, i);
+      value += random.nextInt(256) * math.pow(16, i).toInt();
     }
 
     return value;
