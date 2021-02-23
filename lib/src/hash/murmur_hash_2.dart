@@ -6,6 +6,9 @@ const _m = 0x5bd1e995;
 const _r = 24;
 
 /// Dart Implementation of MurmurHash2, by Austin Appleby
+///
+/// Original implementation in C can be found here:
+/// https://github.com/abrandoned/murmur2/blob/master/MurmurHash2.c
 int murmurHash2(Uint8List data, [int seed = 0]) {
   // Initialize the hash to a 'random' value
 
@@ -36,7 +39,7 @@ int murmurHash2(Uint8List data, [int seed = 0]) {
 
   assert(
     len == 0,
-    'This algorithm does not support data with len where 12 % 4 ==0',
+    'This algorithm does not support data with len where: 12 % 4 == 0',
   );
 
   /// Duplicating values inside cases is faster than
