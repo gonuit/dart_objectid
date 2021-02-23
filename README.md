@@ -136,14 +136,24 @@ Helper method that checks whether the provided `hexString` is a valid ObjectId.
 ***
 
 ## Benchmark:
-Benchmark hardware/software: Intel i7 3770k, 16GB RAM DDR3, Windows 10.
+Benchmark hardware/software:  
+CPU: 2,3 GHz 8-Core Intel Core i9  
+RAM: 32 GB 2667 MHz DDR4
+OS: macOS Big Sur  
   
 ```
-ObjectId() => 0.58338475488028056 us.
-ObjectId.fromHexString(hexString) => 1.5431443397313450 us.
-ObjectId.fromBytes(bytes) => 0.58338475488028056 us.
-ObjectId.fromValues(millisecondsSinceEpoch, processUnique, counter) => 0.50956103355082625 us.
-ObjectId.fromTimestamp(timestamp) => 0.47020163256147746 us.
+Constructors:
+ObjectId() → (RunTime): 1.4411921541499129 us.
+ObjectId.fromHexString() → (RunTime): 1.4694861207035899 us.
+ObjectId.fromBytes() → (RunTime): 0.36035068608068 us.
+ObjectId.fromValues() → (RunTime): 0.15900537684632074 us.
+ObjectId.fromTimestamp() → (RunTime): 0.16805727556390831 us.
+Properties:
+ObjectId.hexString → (RunTime): 0.1998765961895126 us.
+ObjectId.timestamp → (RunTime): 0.20065183755949578 us.
+ObjectId.hashCode → (RunTime): 0.18386848255180036 us.
+Operators:
+ObjectId == ObjectId → (RunTime): 0.35003159035102915 us.
 ```
   
 Benchmark is available in the example app.
