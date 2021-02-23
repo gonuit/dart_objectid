@@ -19,7 +19,7 @@ class ProcessUniqueWeb implements ProcessUnique {
         math.Random().nextInt(0xffffff));
 
     for (var i = 0; i < 10; i++) {
-      value += (random.nextInt(256) * math.pow(16, i)).round();
+      value += random.nextInt(256) * math.pow(16, i).toInt();
     }
 
     return value;

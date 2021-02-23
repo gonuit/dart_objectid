@@ -1,5 +1,5 @@
-name: example
-description: A sample command-line application.
+name: objectid_example
+description: ObjectId example.
 version: 1.0.0
 
 environment:

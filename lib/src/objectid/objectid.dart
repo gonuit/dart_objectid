@@ -181,7 +181,7 @@ class ObjectId {
 
     var secondsSinceEpoch = 0;
     for (var x = 3, y = 0; x >= 0; x--, y++) {
-      secondsSinceEpoch += (_bytes[x] * math.pow(256, y)).round();
+      secondsSinceEpoch += _bytes[x] * math.pow(256, y).toInt();
     }
 
     return _timestamp =
