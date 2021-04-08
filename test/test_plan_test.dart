@@ -79,13 +79,20 @@ void main() {
       'its sequence from 0xFFFFFF to 0x000000', () {
     var id = ObjectId();
 
+    var attempt = 0;
     while (!id.bytes.sublist(9, 12).every((element) => element == 255)) {
       id = ObjectId();
+
+      /// prevent infinit loop
+      if (++attempt > 0xffffff + 1) {
+        break;
+      }
     }
+
     expect(id.bytes.sublist(9, 12), equals(Uint8List(3)..fillRange(0, 3, 255)));
     expect(ObjectId().bytes.sublist(9, 12),
         equals(Uint8List(3)..fillRange(0, 3, 0)));
-  }, skip: true);
+  });
 
   test(
       'Ensure that after a new process is created through a fork() '
