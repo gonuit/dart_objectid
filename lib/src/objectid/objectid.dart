@@ -236,5 +236,5 @@ class ObjectId {
   int get hashCode => _hashCode ??= murmurHash2(bytes, runtimeType.hashCode);
 
   @override
-  String toString() => '$runtimeType($hexString)';
+  String toString() => hexString;
 }
