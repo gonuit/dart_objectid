@@ -156,7 +156,7 @@ void main() {
     test('toString method works correctly', () {
       var id = ObjectId.fromHexString('5f52f0b42b5bb4c3adef2044');
 
-      expect(id.toString(), equals('ObjectId(5f52f0b42b5bb4c3adef2044)'));
+      expect(id.toString(), equals('5f52f0b42b5bb4c3adef2044'));
     });
   });
 }
