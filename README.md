@@ -25,7 +25,7 @@ dependencies:
 2. Play with it!
 ```dart
 final id = ObjectId(); // That's all 🔥😮!
-print(id.hexString);   // it's working! => 5f52c805df41c9df948e6135
+print(id);   // it's working! => 5f52c805df41c9df948e6135
 ```
 
 ***
