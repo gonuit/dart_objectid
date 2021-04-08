@@ -20,7 +20,7 @@ Why this package?
 1. Depend on it.
 ```yml
 dependencies:
-  objectid: 2.0.0-nullsafety.0
+  objectid: 2.0.0
 ```
 2. Play with it!
 ```dart

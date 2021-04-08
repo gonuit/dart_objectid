@@ -1,3 +1,24 @@
+## 2.0.0
+
+- Stable nullsafety release
+- Fixed a bug that caused the counter value to overflow at `0xfffffe`.
+  - Enabled counter overflow unit test.
+- `toString` method now instead of `runtimeType(hexString)`, returns objectid's `hexString`.
+  ```dart
+  /// Before:
+  print(ObjectId()) // => "ObjectId(606eed9d7203bfbbb7fffffe)"
+  /// Now:
+  print(ObjectId()) // => "606eed9d7203bfbbb7fffffe"
+  ```
+  **TIP**:  
+  If you still want to use the `toString` method with `runtimeType`, you can override the `ObjectId` class. Example:
+  ```dart
+  class MyObjectId extends ObjectId {
+    @override
+    String toString() => '$runtimeType($hexString)';
+  }
+  ```
+
 ## 2.0.0-nullsafety.0
 
 - Initial move towards nullsafety
