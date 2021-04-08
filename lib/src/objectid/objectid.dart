@@ -18,6 +18,7 @@ import '../process_unique/process_unique.dart';
 /// ```
 class ObjectId {
   static const _maxCounterValue = 0xffffff;
+  static const _counterMask = _maxCounterValue + 1;
   static const _objectIdBytesLength = 12;
   static const _objectIdHexStringLength = _objectIdBytesLength * 2;
 
@@ -27,11 +28,11 @@ class ObjectId {
   /// ObjectId counter that will be used for ObjectId generation.
   ///
   /// Initialized with random value.
-  static int _counter = math.Random().nextInt(_maxCounterValue);
+  static int _counter = math.Random().nextInt(_counterMask);
 
   /// Get ObjectId counter by incrementing current counter value by 1.
   /// ObjectId counter cannot be larger than 3 bits.
-  static int _getCounter() => (_counter = (_counter + 1) % _maxCounterValue);
+  static int _getCounter() => (_counter = (_counter + 1) % _counterMask);
 
   final Uint8List _bytes = Uint8List(_objectIdBytesLength);
 
