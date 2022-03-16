@@ -19,8 +19,12 @@ import '../process_unique/process_unique.dart';
 class ObjectId {
   static const _maxCounterValue = 0xffffff;
   static const _counterMask = _maxCounterValue + 1;
-  static const _objectIdBytesLength = 12;
-  static const _objectIdHexStringLength = _objectIdBytesLength * 2;
+
+  /// Length of the [ObjectId] in bytes.
+  static const byteLength = 12;
+
+  /// Length of the ObjectId [hexString].
+  static const hexStringLength = byteLength * 2;
 
   /// 5 bytes of process and timestamp specific random number.
   static final int _processUnique = ProcessUnique().getValue();
@@ -34,7 +38,7 @@ class ObjectId {
   /// ObjectId counter cannot be larger than 3 bits.
   static int _getCounter() => (_counter = (_counter + 1) % _counterMask);
 
-  final Uint8List _bytes = Uint8List(_objectIdBytesLength);
+  final Uint8List _bytes = Uint8List(byteLength);
 
   /// ObjectId bytes.
   Uint8List get bytes => _bytes;
@@ -108,7 +112,7 @@ class ObjectId {
   /// {@macro objectid.structure}
   ObjectId.fromHexString(String hexString) {
     ArgumentError.checkNotNull(hexString, 'hexString');
-    if (hexString.length != _objectIdHexStringLength) {
+    if (hexString.length != hexStringLength) {
       throw ArgumentError.value(
           hexString, 'hexString', 'Provided hexString has wrong length.');
     }
@@ -160,15 +164,15 @@ class ObjectId {
   /// {@macro objectid.structure}
   ObjectId.fromBytes(List<int> bytes) {
     ArgumentError.checkNotNull(bytes, 'bytes');
-    if (bytes.length != _objectIdBytesLength) {
+    if (bytes.length != byteLength) {
       throw ArgumentError.value(
         bytes,
         'bytes',
-        'Bytes array should has length equal to $_objectIdBytesLength',
+        'Bytes array should has length equal to $byteLength',
       );
     }
 
-    for (var i = 0; i < _objectIdBytesLength; i++) {
+    for (var i = 0; i < byteLength; i++) {
       _bytes[i] = bytes[i];
     }
   }
@@ -185,8 +189,9 @@ class ObjectId {
       secondsSinceEpoch += _bytes[x] * math.pow(256, y).toInt();
     }
 
-    return _timestamp =
-        DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch * 1000);
+    return _timestamp = DateTime.fromMillisecondsSinceEpoch(
+      secondsSinceEpoch * 1000,
+    );
   }
 
   String? _hexString;

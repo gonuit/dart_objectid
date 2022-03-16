@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:objectid/objectid.dart';
 import 'package:test/test.dart';
-import 'package:matcher/matcher.dart';
 
 void createObjectId(SendPort sendPort) {
   final id = ObjectId();
@@ -73,7 +72,6 @@ void main() {
     });
   });
 
-// TODO: Remove brute force method
   test(
       'Ensure that the Counter field successfully overflows '
       'its sequence from 0xFFFFFF to 0x000000', () {

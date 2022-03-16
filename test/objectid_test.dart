@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:matcher/matcher.dart';
 import 'package:objectid/objectid.dart';
 import 'package:test/test.dart';
 

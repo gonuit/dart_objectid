@@ -1,3 +1,5 @@
+## 2.1.0
+- Constants `ObjectId.byteLength` and ` ObjectId.hexStringLength` are now publicly available.
 ## 2.0.0
 
 - Stable nullsafety release
