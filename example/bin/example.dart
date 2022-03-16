@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:objectid/objectid.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
+import 'package:uuid/uuid.dart';
 
 class ObjectIdBenchmark extends BenchmarkBase {
   const ObjectIdBenchmark() : super('ObjectId() → ');
@@ -13,6 +14,49 @@ class ObjectIdBenchmark extends BenchmarkBase {
   @override
   void run() {
     ObjectId();
+  }
+}
+
+class UuidBenchmark extends BenchmarkBase {
+  const UuidBenchmark() : super('Uuid().v1() → ');
+
+  static void main() {
+    UuidBenchmark().report();
+  }
+
+  @override
+  void run() {
+    Uuid().v1();
+  }
+}
+
+class UuidBenchmarkV1 extends BenchmarkBase {
+  const UuidBenchmarkV1() : super('uuid.v1() → ');
+
+  final uuid = const Uuid();
+
+  static void main() {
+    UuidBenchmarkV1().report();
+  }
+
+  @override
+  void run() {
+    uuid.v1();
+  }
+}
+
+class UuidBenchmarkV4 extends BenchmarkBase {
+  const UuidBenchmarkV4() : super('uuid.v4() → ');
+
+  final uuid = const Uuid();
+
+  static void main() {
+    UuidBenchmarkV4().report();
+  }
+
+  @override
+  void run() {
+    uuid.v4();
   }
 }
 
@@ -180,4 +224,9 @@ void main(List<String> arguments) async {
   HashCodeBenchmark.main();
   print('Operators:');
   EqualityOperatorBenchmark.main();
+
+  print('Uuid:');
+  UuidBenchmark.main();
+  UuidBenchmarkV1.main();
+  UuidBenchmarkV4.main();
 }
