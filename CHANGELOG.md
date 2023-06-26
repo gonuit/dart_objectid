@@ -1,7 +1,7 @@
 ## 3.0.0
 - ⚠️ The strict runtime type checking in the equals operator has been removed. Now all classes that extend ObjectId and have the same value will be matched by this operator.
   ```dart
-  class class MyObjectId extends ObjectId {}
+  class MyObjectId extends ObjectId {}
   const hexString = '606eed9d7203bfbbb7fffffe';
   ObjectId(hexString) == MyObjectId(hexString); // true
   ```

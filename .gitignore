@@ -81,4 +81,4 @@ coverage
 .vscode
 
 # pubspec.lock file should not be part of the package code
-pubspec.lock
+/pubspec.lock
