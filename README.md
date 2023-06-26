@@ -137,23 +137,25 @@ Helper method that checks whether the provided `hexString` is a valid ObjectId.
 
 ## Benchmark:
 Benchmark hardware/software:  
-CPU: 2,3 GHz 8-Core Intel Core i9  
-RAM: 32 GB 2667 MHz DDR4
-OS: macOS Big Sur  
+UNIT: MacBook Pro (13-inch, M2, 2022)  
+CPU: Apple M2, 16GB RAM  
+RAM: 16 GB  
+OS: macOS Monterey 12.6.1 (Build 21G217)  
+Dart SDK version: 3.0.5
   
 ```
 Constructors:
-ObjectId() → (RunTime): 1.4411921541499129 us.
-ObjectId.fromHexString() → (RunTime): 1.4694861207035899 us.
-ObjectId.fromBytes() → (RunTime): 0.36035068608068 us.
-ObjectId.fromValues() → (RunTime): 0.15900537684632074 us.
-ObjectId.fromTimestamp() → (RunTime): 0.16805727556390831 us.
+ObjectId() → (RunTime): 0.29132956069161253 us.
+ObjectId.fromHexString() → (RunTime): 0.75057425 us.
+ObjectId.fromBytes() → (RunTime): 0.14730780908787755 us.
+ObjectId.fromValues() → (RunTime): 0.07130824418248206 us.
+ObjectId.fromTimestamp() → (RunTime): 0.044412125467054496 us.
 Properties:
-ObjectId.hexString → (RunTime): 0.1998765961895126 us.
-ObjectId.timestamp → (RunTime): 0.20065183755949578 us.
-ObjectId.hashCode → (RunTime): 0.18386848255180036 us.
+ObjectId.hexString → (RunTime): 0.039307475449695345 us.
+ObjectId.timestamp → (RunTime): 0.050248475 us.
+ObjectId.hashCode → (RunTime): 0.03570540247334531 us.
 Operators:
-ObjectId == ObjectId → (RunTime): 0.35003159035102915 us.
+ObjectId == ObjectId → (RunTime): 0.12478619550684174 us.
 ```
   
 Benchmark is available in the example app.
