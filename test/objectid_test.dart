@@ -128,7 +128,7 @@ void main() {
     });
 
     test('HashCode works correctly', () {
-      var checksToBeDone = 100;
+      var checksToBeDone = 1000;
       var id = ObjectId();
       var id2 = ObjectId();
       do {
@@ -142,9 +142,13 @@ void main() {
         expect(idFromBytes.hashCode, isNot(equals(id.hashCode)));
         expect(idFromBytes.hashCode, equals(id2.hashCode));
 
-        final customId = TestObjectId.fromHexString(id.hexString);
-        expect(customId.hashCode, isNot(equals(id.hashCode)));
-        expect(customId.hashCode, isNot(equals(id2.hashCode)));
+        final customId1 = TestObjectId.fromHexString(id.hexString);
+        expect(customId1.hashCode, equals(id.hashCode));
+        expect(customId1.hashCode, isNot(equals(id2.hashCode)));
+
+        final customId2 = TestObjectId.fromHexString(id2.hexString);
+        expect(customId2.hashCode, isNot(equals(id.hashCode)));
+        expect(customId2.hashCode, equals(id2.hashCode));
 
         /// create new values
         id = ObjectId();

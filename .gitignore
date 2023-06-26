@@ -76,3 +76,9 @@ build/
 
 # codecov
 coverage
+
+# vcsocode
+.vscode
+
+# pubspec.lock file should not be part of the package code
+pubspec.lock

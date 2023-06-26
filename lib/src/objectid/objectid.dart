@@ -199,22 +199,21 @@ class ObjectId {
   /// Returns hex string for current [ObjectId].
   String get hexString {
     if (_hexString == null) {
-      final _buffer = StringBuffer();
+      final buffer = StringBuffer();
       for (var i = 0; i < _bytes.length; i++) {
-        _buffer.write(_bytes[i].toRadixString(16).padLeft(2, '0'));
+        buffer.write(_bytes[i].toRadixString(16).padLeft(2, '0'));
       }
-      _hexString = _buffer.toString();
+      _hexString = buffer.toString();
     }
 
     return _hexString!;
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
+    if (other is! ObjectId) return false;
     for (var i = 0; i < _bytes.length; i++) {
-      if ((other as ObjectId)._bytes[i] != _bytes[i]) return false;
+      if (other._bytes[i] != _bytes[i]) return false;
     }
     return true;
   }
@@ -237,8 +236,7 @@ class ObjectId {
   /// Prevents multiple calculations of the same value.
   int? _hashCode;
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => _hashCode ??= murmurHash2(bytes, runtimeType.hashCode);
+  int get hashCode => _hashCode ??= murmurHash2(bytes);
 
   @override
   String toString() => hexString;
