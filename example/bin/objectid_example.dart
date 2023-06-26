@@ -82,11 +82,11 @@ class HexStringBenchmark extends BenchmarkBase {
     HexStringBenchmark().report();
   }
 
-  ObjectId _objectId;
+  ObjectId? _objectId;
 
   @override
   void run() {
-    _objectId.hexString;
+    _objectId!.hexString;
   }
 
   @override
@@ -102,8 +102,8 @@ class EqualityOperatorBenchmark extends BenchmarkBase {
     EqualityOperatorBenchmark().report();
   }
 
-  ObjectId _objectIdA;
-  ObjectId _objectIdB;
+  ObjectId? _objectIdA;
+  ObjectId? _objectIdB;
 
   @override
   void run() {
@@ -114,7 +114,6 @@ class EqualityOperatorBenchmark extends BenchmarkBase {
   void setup() {
     _objectIdA = ObjectId();
     _objectIdB = ObjectId();
-    // print(_objectIdA.hexString + _objectIdB.hexString);
   }
 }
 
@@ -125,11 +124,11 @@ class TimestampBenchmark extends BenchmarkBase {
     TimestampBenchmark().report();
   }
 
-  ObjectId _objectIdA;
+  ObjectId? _objectIdA;
 
   @override
   void run() {
-    _objectIdA.timestamp;
+    _objectIdA!.timestamp;
   }
 
   @override
@@ -145,7 +144,7 @@ class HashCodeBenchmark extends BenchmarkBase {
     HashCodeBenchmark().report();
   }
 
-  ObjectId _id;
+  ObjectId? _id;
 
   @override
   void run() {
@@ -165,16 +164,17 @@ class FromBytesBenchmark extends BenchmarkBase {
     FromBytesBenchmark().report();
   }
 
-  Uint8List _bytes;
+  Uint8List? _bytes;
   @override
   void run() {
-    ObjectId.fromBytes(_bytes);
+    ObjectId.fromBytes(_bytes!);
   }
 
   @override
   void setup() {
     _bytes = Uint8List.fromList(
-        [95, 82, 205, 121, 180, 195, 28, 88, 32, 47, 183, 78]);
+      [95, 82, 205, 121, 180, 195, 28, 88, 32, 47, 183, 78],
+    );
   }
 }
 
@@ -198,11 +198,11 @@ class FromTimestampBenchmark extends BenchmarkBase {
     FromTimestampBenchmark().report();
   }
 
-  DateTime _timestamp;
+  DateTime? _timestamp;
 
   @override
   void run() {
-    ObjectId.fromTimestamp(_timestamp);
+    ObjectId.fromTimestamp(_timestamp!);
   }
 
   @override
