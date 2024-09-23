@@ -3,10 +3,10 @@
 ### Blazing fast, cross-platform ObjectId implementation for the dart language!
 
 [![Dart tests](https://github.com/gonuit/dart_objectid/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/gonuit/dart_objectid/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/gonuit/dart_objectid/branch/master/graph/badge.svg)](https://codecov.io/gh/gonuit/dart_objectid)
 [![pub package](https://img.shields.io/pub/v/objectid.svg)](https://pub.dartlang.org/packages/objectid)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
-[![codecov](https://codecov.io/gh/gonuit/dart_objectid/branch/master/graph/badge.svg)](https://codecov.io/gh/gonuit/dart_objectid)
+[![style: effective dart](https://img.shields.io/badge/style-lints/recommended-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
   
 Why this package?
 - 🚀 Fast.
@@ -20,7 +20,7 @@ Why this package?
 1. Depend on it.
 ```yml
 dependencies:
-  objectid: 2.0.0
+  objectid: 3.1.0
 ```
 2. Play with it!
 ```dart
