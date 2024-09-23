@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:objectid/objectid.dart';
@@ -160,6 +161,25 @@ void main() {
       var id = ObjectId.fromHexString('5f52f0b42b5bb4c3adef2044');
 
       expect(id.toString(), equals('5f52f0b42b5bb4c3adef2044'));
+    });
+
+    test('toJson works correctly for a single element', () {
+      final object = ObjectId();
+      expect(object.toJson(), equals(object.hexString));
+      expect(jsonEncode(object), equals('"${object.hexString}"'));
+    });
+
+    test('toJson works correctly for nested elements', () {
+      final list = List.generate(10, (index) => ObjectId());
+      expect(
+        jsonEncode(list),
+        equals("[${list.map((o) => '"${o.hexString}"').join(',')}]"),
+      );
+    });
+
+    test('fromJson works correctly', () {
+      final object = ObjectId();
+      expect(ObjectId.fromJson(object.toJson()), equals(object));
     });
   });
 }

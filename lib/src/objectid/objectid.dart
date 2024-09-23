@@ -43,10 +43,10 @@ class ObjectId {
   /// ObjectId bytes.
   Uint8List get bytes => _bytes;
 
-  /// ### Creates ObjectId.
+  /// Creates ObjectId instance.
   ///
   /// {@template objectid.structure}
-  /// #### ObjectId structure:
+  /// ObjectId structure:
   /// ```
   ///   4 byte timestamp    5 byte process unique   3 byte counter
   /// |<----------------->|<---------------------->|<------------>|
@@ -63,7 +63,7 @@ class ObjectId {
     );
   }
 
-  /// ### Creates ObjectId from provided values.
+  /// Creates ObjectId from provided values.
   ///
   /// {@macro objectid.structure}
   ObjectId.fromValues(
@@ -78,7 +78,8 @@ class ObjectId {
     _initialize(millisecondsSinceEpoch, processUnique, counter);
   }
 
-  /// ### Creates ObjectId from provided timestamp.
+  /// Creates ObjectId from provided timestamp.
+  ///
   /// Only timestamp segment is set while the rest of the ObjectId is
   /// zeroed out.
   ///
@@ -99,9 +100,10 @@ class ObjectId {
     _bytes[0] = (secondsSinceEpoch >> 24) & 0xff;
   }
 
-  /// ### Creates ObjectId from hex string.
+  /// Creates ObjectId from hex string.
+  ///
   /// Can be helpful for mapping hex strings returned from
-  /// API / mongodb to ObjectId instances.
+  /// API / MongoDB to ObjectId instances.
   ///
   /// Example usage:
   /// ```dart
@@ -128,6 +130,24 @@ class ObjectId {
 
     _initialize(millisecondsSinceEpoch, processUnique, counter);
   }
+
+  /// Creates ObjectId from a JSON string.
+  ///
+  /// This is a factory constructor that maps JSON data
+  /// to an ObjectId instance.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// final jsonString = '{"_id": "507f1f77bcf86cd799439011"}';
+  /// final json = jsonDecode(jsonString);
+  /// final ObjectId objectId = ObjectId.fromJson(json['_id']);
+  /// print(objectId.hexString); // Output: 507f1f77bcf86cd799439011
+  /// ```
+  ///
+  /// **Note:** This method is functionally equivalent to
+  /// [ObjectId.fromHexString]. It serves as an alias to clearly indicate
+  /// the intention to deserialize from a JSON value.
+  factory ObjectId.fromJson(String json) = ObjectId.fromHexString;
 
   /// Internally initialize ObjectId instance by filling
   /// bytes array with provided data.
@@ -237,6 +257,8 @@ class ObjectId {
   int? _hashCode;
   @override
   int get hashCode => _hashCode ??= murmurHash2(bytes);
+
+  dynamic toJson() => hexString;
 
   @override
   String toString() => hexString;

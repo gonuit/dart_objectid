@@ -1,3 +1,6 @@
+## 3.1.0
+- Added the _ObjectId.toJson()_ method to enable straightforward serialization of ObjectId instances. You can now serialize an ObjectId simply by calling _jsonEncode_ or using the built-in _JsonEncoder_.
+- Added the _ObjectId.fromJson(String json)_ factory constructor. This serves as an alias to the existing _ObjectId.fromHexString_ constructor, clearly indicating the intention to deserialize from a JSON value.
 ## 3.0.0
 - ⚠️ The strict runtime type checking in the equals operator has been removed. Now all classes that extend ObjectId and have the same value will be matched by this operator.
   ```dart
