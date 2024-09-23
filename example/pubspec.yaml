@@ -6,14 +6,14 @@ executables:
   example: ./bin/example.dart
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
+  sdk: "^3.0.0"
 
 dependencies:
-  benchmark_harness: any
-  uuid: any
+  benchmark_harness: ^2.2.2
+  uuid: ^4.5.0
   objectid:
     path: ../
 
 dev_dependencies:
-  lints: ^2.1.0
+  lints: ^4.0.0
 
