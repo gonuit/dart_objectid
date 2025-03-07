@@ -4,6 +4,19 @@ import 'dart:typed_data';
 import '../hash/murmur_hash_2.dart';
 import '../process_unique/process_unique.dart';
 
+extension on int {
+  /// Converts integer to 5 bytes Uint8List.
+  @pragma('vm:prefer-inline')
+  Uint8List toProcessUniqueBytes() {
+    return Uint8List(ProcessUnique.size)
+      ..[0] = (this >> 32) & 0xff
+      ..[1] = (this >> 24) & 0xff
+      ..[2] = (this >> 16) & 0xff
+      ..[3] = (this >> 8) & 0xff
+      ..[4] = this & 0xff;
+  }
+}
+
 /// ## ObjectId
 /// This class allows you to create and manipulate bson ObjectIds.
 ///
@@ -27,7 +40,7 @@ class ObjectId {
   static const hexStringLength = byteLength * 2;
 
   /// 5 bytes of process and timestamp specific random number.
-  static final int _processUnique = ProcessUnique().getValue();
+  static final Uint8List _processUnique = ProcessUnique().getValue();
 
   /// ObjectId counter that will be used for ObjectId generation.
   ///
@@ -71,11 +84,11 @@ class ObjectId {
     int processUnique,
     int counter,
   ) {
-    ArgumentError.checkNotNull(millisecondsSinceEpoch, 'timestamp');
-    ArgumentError.checkNotNull(processUnique, 'processUnique');
-    ArgumentError.checkNotNull(counter, 'counter');
-
-    _initialize(millisecondsSinceEpoch, processUnique, counter);
+    _initialize(
+      millisecondsSinceEpoch,
+      processUnique.toProcessUniqueBytes(),
+      counter,
+    );
   }
 
   /// Creates ObjectId from provided timestamp.
@@ -94,10 +107,11 @@ class ObjectId {
     final secondsSinceEpoch = timestamp.millisecondsSinceEpoch ~/ 1000;
 
     // 4-byte timestamp
-    _bytes[3] = secondsSinceEpoch & 0xff;
-    _bytes[2] = (secondsSinceEpoch >> 8) & 0xff;
-    _bytes[1] = (secondsSinceEpoch >> 16) & 0xff;
-    _bytes[0] = (secondsSinceEpoch >> 24) & 0xff;
+    _bytes
+      ..[3] = secondsSinceEpoch & 0xff
+      ..[2] = (secondsSinceEpoch >> 8) & 0xff
+      ..[1] = (secondsSinceEpoch >> 16) & 0xff
+      ..[0] = (secondsSinceEpoch >> 24) & 0xff;
   }
 
   /// Creates ObjectId from hex string.
@@ -113,10 +127,12 @@ class ObjectId {
   /// ```
   /// {@macro objectid.structure}
   ObjectId.fromHexString(String hexString) {
-    ArgumentError.checkNotNull(hexString, 'hexString');
     if (hexString.length != hexStringLength) {
       throw ArgumentError.value(
-          hexString, 'hexString', 'Provided hexString has wrong length.');
+        hexString,
+        'hexString',
+        'ObjectId hexString must be exactly $hexStringLength characters long.',
+      );
     }
 
     final secondsSinceEpoch = int.parse(hexString.substring(0, 8), radix: 16);
@@ -128,7 +144,11 @@ class ObjectId {
     /// cache this value
     _hexString = hexString;
 
-    _initialize(millisecondsSinceEpoch, processUnique, counter);
+    _initialize(
+      millisecondsSinceEpoch,
+      processUnique.toProcessUniqueBytes(),
+      counter,
+    );
   }
 
   /// Creates ObjectId from a JSON string.
@@ -151,26 +171,31 @@ class ObjectId {
 
   /// Internally initialize ObjectId instance by filling
   /// bytes array with provided data.
-  void _initialize(int millisecondsSinceEpoch, int processUnique, int counter) {
+  @pragma('vm:prefer-inline')
+  void _initialize(
+      int millisecondsSinceEpoch, Uint8List processUnique, int counter) {
     final secondsSinceEpoch = millisecondsSinceEpoch ~/ 1000;
 
     // 4-byte timestamp
-    _bytes[3] = secondsSinceEpoch & 0xff;
-    _bytes[2] = (secondsSinceEpoch >> 8) & 0xff;
-    _bytes[1] = (secondsSinceEpoch >> 16) & 0xff;
-    _bytes[0] = (secondsSinceEpoch >> 24) & 0xff;
+    _bytes
+      ..[3] = secondsSinceEpoch & 0xff
+      ..[2] = (secondsSinceEpoch >> 8) & 0xff
+      ..[1] = (secondsSinceEpoch >> 16) & 0xff
+      ..[0] = (secondsSinceEpoch >> 24) & 0xff;
 
     // 5-byte process unique
-    _bytes[8] = processUnique & 0xff;
-    _bytes[7] = (processUnique >> 8) & 0xff;
-    _bytes[6] = (processUnique >> 16) & 0xff;
-    _bytes[5] = (processUnique >> 24) & 0xff;
-    _bytes[4] = (processUnique >> 32) & 0xff;
+    _bytes
+      ..[4] = processUnique[0]
+      ..[5] = processUnique[1]
+      ..[6] = processUnique[2]
+      ..[7] = processUnique[3]
+      ..[8] = processUnique[4];
 
     // 3-byte counter
-    _bytes[11] = counter & 0xff;
-    _bytes[10] = (counter >> 8) & 0xff;
-    _bytes[9] = (counter >> 16) & 0xff;
+    _bytes
+      ..[11] = counter & 0xff
+      ..[10] = (counter >> 8) & 0xff
+      ..[9] = (counter >> 16) & 0xff;
   }
 
   /// ### Creates ObjectId from bytes.
@@ -188,7 +213,7 @@ class ObjectId {
       throw ArgumentError.value(
         bytes,
         'bytes',
-        'Bytes array should has length equal to $byteLength',
+        'Expected $byteLength bytes but got ${bytes.length}.',
       );
     }
 

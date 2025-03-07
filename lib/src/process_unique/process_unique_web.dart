@@ -1,5 +1,6 @@
-import 'dart:html' as web;
 import 'dart:math' as math;
+import 'dart:js_util' as js_utils;
+import 'dart:typed_data';
 
 import '../process_unique/process_unique.dart';
 
@@ -7,20 +8,21 @@ import '../process_unique/process_unique.dart';
 class ProcessUniqueWeb implements ProcessUnique {
   /// 5 bytes
   @override
-  int getValue() {
-    var value = 0;
-
+  Uint8List getValue() {
     /// Get's process unique by combination of timestamp, hostname
     /// and random value
+    final hostname =
+        (js_utils.getProperty(js_utils.globalThis, 'location')?['hostname'] ??
+                'localhost')
+            .toString();
+
     final random = math.Random(DateTime.now().millisecondsSinceEpoch ^
-        (web.window.location.hostname ?? "")
-            .codeUnits
-            .reduce((value, element) => value + element) ^
+        hostname.codeUnits.reduce((value, element) => value + element) ^
         math.Random().nextInt(0xffffff));
 
-    for (var i = 0; i < 10; i++) {
-      value += random.nextInt(256) * math.pow(16, i).toInt();
-    }
+    final value = Uint8List.fromList(
+      List.generate(5, (index) => random.nextInt(256)),
+    );
 
     return value;
   }
