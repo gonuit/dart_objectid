@@ -1,7 +1,14 @@
+## 4.0.0
+
+- Migration from deprecated `dart:html` to `dart:js_util`.
+
 ## 3.1.0
+
 - Added the _ObjectId.toJson()_ method to enable straightforward serialization of ObjectId instances. You can now serialize an ObjectId simply by calling _jsonEncode_ or using the built-in _JsonEncoder_.
 - Added the _ObjectId.fromJson(String json)_ factory constructor. This serves as an alias to the existing _ObjectId.fromHexString_ constructor, clearly indicating the intention to deserialize from a JSON value.
+
 ## 3.0.0
+
 - ⚠️ The strict runtime type checking in the equals operator has been removed. Now all classes that extend ObjectId and have the same value will be matched by this operator.
   ```dart
   class MyObjectId extends ObjectId {}
@@ -10,11 +17,13 @@
   ```
 - Updated dart sdk constraints to match new requirements.
 - Updated package dependencies
-  - Replaced the code analysis rules defined by the *effective_dart* package with the *lints* package. 
-- Removed unnecessary (for packages) *pubspec.lock* file.
+  - Replaced the code analysis rules defined by the _effective_dart_ package with the _lints_ package.
+- Removed unnecessary (for packages) _pubspec.lock_ file.
 
 ## 2.1.0
+
 - Constants `ObjectId.byteLength` and ` ObjectId.hexStringLength` are now publicly available.
+
 ## 2.0.0
 
 - Stable nullsafety release
