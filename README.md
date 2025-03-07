@@ -12,7 +12,7 @@ Why this package?
 - 🚀 Fast.
 - 📱 Cross-platform.
 - 🧪 Well tested.
-- 📒 Fulfills [bson ObjectId specification](https://github.com/mongodb/specifications/blob/master/source/objectid.rst).
+- 📒 Fulfills [bson ObjectId specification](https://github.com/mongodb/specifications/blob/master/source/bson-objectid/objectid.md).
 - 📝 Documented.
 
 
