@@ -9,10 +9,11 @@ environment:
   sdk: "^3.0.0"
 
 dependencies:
-  benchmark_harness: ^2.2.2
-  uuid: ^4.5.0
+  benchmark_harness: ^2.3.1
+  
   objectid:
     path: ../
+  uuid: ^4.5.1
 
 dev_dependencies:
   lints: ^4.0.0
