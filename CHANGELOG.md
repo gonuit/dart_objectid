@@ -1,3 +1,6 @@
+## 4.0.1
+- Removed deprecated implementation related to `dart:js_util`. 
+  - Process unique on the web platform is now based on `Random.secured()`.
 ## 4.0.0
 
 - Migration from deprecated `dart:html` to `dart:js_util`.
