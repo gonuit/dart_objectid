@@ -1,3 +1,7 @@
+## 4.0.3
+- Updated dependencies and README.
+- Updated benchmark results.
+
 ## 4.0.2
 - Rewrote `ObjectId.fromHexString` to parse hex directly into bytes, avoiding 32-bit bitwise limitation on web and improving performance (~4x faster).
 - Fixed `ObjectId.fromValues` web support by replacing `>> 32` with integer division in `toProcessUniqueBytes`.

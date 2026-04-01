@@ -4,9 +4,9 @@
 
 [![Dart tests](https://github.com/gonuit/dart_objectid/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/gonuit/dart_objectid/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/gonuit/dart_objectid/branch/master/graph/badge.svg)](https://codecov.io/gh/gonuit/dart_objectid)
-[![pub package](https://img.shields.io/pub/v/objectid.svg)](https://pub.dartlang.org/packages/objectid)
+[![pub package](https://img.shields.io/pub/v/objectid.svg)](https://pub.dev/packages/objectid)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![style: effective dart](https://img.shields.io/badge/style-lints/recommended-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
+[![style: lints/recommended](https://img.shields.io/badge/style-lints/recommended-40c4ff.svg)](https://pub.dev/packages/lints)
   
 Why this package?
 - 🚀 Fast.
@@ -16,11 +16,11 @@ Why this package?
 - 📝 Documented.
 
 
-## Getting started.
+## Getting started
 1. Depend on it.
 ```yml
 dependencies:
-  objectid: 4.0.0
+  objectid: 4.0.3
 ```
 2. Play with it!
 ```dart
@@ -104,28 +104,28 @@ print(ObjectId.isValid('invalid')); // => false
 
 All implementation details conform to the [BSON ObjectId specification](https://github.com/mongodb/specifications/blob/master/source/bson-objectid/objectid.md).
 
-## Benchmark:
-Benchmark hardware/software:  
-UNIT: MacBook Pro (13-inch, M2, 2022)  
-CPU: Apple M2, 16GB RAM  
-RAM: 16 GB  
-OS: macOS Monterey 12.6.1 (Build 21G217)  
-Dart SDK version: 3.0.5
-  
+## Benchmark
+Benchmark hardware/software:
+UNIT: MacBook Pro (M4 Pro, 2024)
+CPU: Apple M4 Pro
+RAM: 48 GB
+OS: macOS 26.3.1
+Dart SDK version: 3.11.4
+
 ```
 Constructors:
-ObjectId() → (RunTime): 0.29132956069161253 us.
-ObjectId.fromHexString() → (RunTime): 0.75057425 us.
-ObjectId.fromBytes() → (RunTime): 0.15551437570213106 us.
-ObjectId.fromValues() → (RunTime): 0.03314456474312962 us.
-ObjectId.fromTimestamp() → (RunTime): 0.044412125467054496 us.
+ObjectId() → (RunTime): 0.28017946395452636 us.
+ObjectId.fromHexString() → (RunTime): 0.1964833532549569 us.
+ObjectId.fromBytes() → (RunTime): 0.11237176106442358 us.
+ObjectId.fromValues() → (RunTime): 0.02774876977800984 us.
+ObjectId.fromTimestamp() → (RunTime): 0.04264624207353758 us.
 Properties:
-ObjectId.hexString → (RunTime): 0.039307475449695345 us.
-ObjectId.timestamp → (RunTime): 0.050248475 us.
-ObjectId.hashCode → (RunTime): 0.03570540247334531 us.
+ObjectId.hexString → (RunTime): 0.03615293445770598 us.
+ObjectId.timestamp → (RunTime): 0.03690251970477984 us.
+ObjectId.hashCode → (RunTime): 0.02660910959699762 us.
 Operators:
-ObjectId == ObjectId → (RunTime): 0.12478619550684174 us.
+ObjectId == ObjectId → (RunTime): 0.08761381094863427 us.
 ```
-  
+
 Benchmark is available in the example app.
  
