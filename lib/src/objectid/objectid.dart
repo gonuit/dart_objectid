@@ -138,17 +138,24 @@ class ObjectId {
     final secondsSinceEpoch = int.parse(hexString.substring(0, 8), radix: 16);
     final millisecondsSinceEpoch = secondsSinceEpoch * 1000;
 
-    final processUnique = int.parse(hexString.substring(8, 18), radix: 16);
+    // We need to split this into two parts because bitwise operations in the
+    // web are limited to 32 bits.
+    // https://dart.dev/resources/language/number-representation#bitwise-operations
+    final processUniqueA = int.parse(hexString.substring(8, 10), radix: 16);
+    final processUniqueB = int.parse(hexString.substring(10, 18), radix: 16);
+    final processUnique = Uint8List(ProcessUnique.size)
+      ..[0] = processUniqueA & 0xff
+      ..[1] = (processUniqueB >> 24) & 0xff
+      ..[2] = (processUniqueB >> 16) & 0xff
+      ..[3] = (processUniqueB >> 8) & 0xff
+      ..[4] = processUniqueB & 0xff;
+
     final counter = int.parse(hexString.substring(18, 24), radix: 16);
 
     /// cache this value
     _hexString = hexString;
 
-    _initialize(
-      millisecondsSinceEpoch,
-      processUnique.toProcessUniqueBytes(),
-      counter,
-    );
+    _initialize(millisecondsSinceEpoch, processUnique, counter);
   }
 
   /// Creates ObjectId from a JSON string.
@@ -173,7 +180,10 @@ class ObjectId {
   /// bytes array with provided data.
   @pragma('vm:prefer-inline')
   void _initialize(
-      int millisecondsSinceEpoch, Uint8List processUnique, int counter) {
+    int millisecondsSinceEpoch,
+    Uint8List processUnique,
+    int counter,
+  ) {
     final secondsSinceEpoch = millisecondsSinceEpoch ~/ 1000;
 
     // 4-byte timestamp
