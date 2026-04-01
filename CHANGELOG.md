@@ -1,3 +1,9 @@
+## 4.0.2
+- Rewrote `ObjectId.fromHexString` to parse hex directly into bytes, avoiding 32-bit bitwise limitation on web and improving performance (~4x faster).
+- Fixed `ObjectId.fromValues` web support by replacing `>> 32` with integer division in `toProcessUniqueBytes`.
+- Fixed `Random.secure()` fallback in `FallbackProcessUnique` to catch all exceptions, enabling Node.js compatibility.
+- Added CI pipeline with formatting, analysis, and tests on VM, Chrome, and Node.js.
+
 ## 4.0.1
 - Removed deprecated implementation related to `dart:js_util`. 
   - Process unique on the web platform is now based on `Random.secured()`.

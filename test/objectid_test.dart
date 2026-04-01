@@ -182,4 +182,53 @@ void main() {
       expect(ObjectId.fromJson(object.toJson()), equals(object));
     });
   });
+
+  group('fromHexString rejects invalid hex characters', () {
+    test('throws FormatException for non-hex characters', () {
+      expect(
+        () => ObjectId.fromHexString('zzzzzzzzzzzzzzzzzzzzzzzz'),
+        throwsA(isA<FormatException>()),
+      );
+    });
+  });
+
+  group('fromHexString 32-bit bitwise boundary (web fix)', () {
+    test('bytes correct when processUnique first byte has high bit set', () {
+      expect(
+        ObjectId.fromHexString('00000000ff00000000000000').bytes,
+        equals([0, 0, 0, 0, 0xff, 0, 0, 0, 0, 0, 0, 0]),
+      );
+    });
+
+    test('bytes correct when processUniqueB has 32-bit sign bit set', () {
+      expect(
+        ObjectId.fromHexString('000000000080000000000000').bytes,
+        equals([0, 0, 0, 0, 0, 0x80, 0, 0, 0, 0, 0, 0]),
+      );
+    });
+
+    test('bytes correct when all processUnique bytes are 0xff', () {
+      expect(
+        ObjectId.fromHexString('00000000ffffffffff000000').bytes,
+        equals([0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0, 0, 0]),
+      );
+    });
+  });
+
+  group('fromValues 32-bit bitwise boundary', () {
+    test('bytes correct when processUnique top byte set (requires >>32)', () {
+      expect(
+        ObjectId.fromValues(0, 0xff00000000, 0).bytes,
+        equals([0, 0, 0, 0, 0xff, 0, 0, 0, 0, 0, 0, 0]),
+      );
+    });
+
+    test('round-trips through fromHexString for high processUnique', () {
+      final id = ObjectId.fromValues(0, 0xff80ff80ff, 0);
+      expect(
+        ObjectId.fromHexString(id.hexString).bytes,
+        equals(id.bytes),
+      );
+    });
+  });
 }

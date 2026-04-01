@@ -9,7 +9,7 @@ extension on int {
   @pragma('vm:prefer-inline')
   Uint8List toProcessUniqueBytes() {
     return Uint8List(ProcessUnique.size)
-      ..[0] = (this >> 32) & 0xff
+      ..[0] = (this ~/ 0x100000000) & 0xff
       ..[1] = (this >> 24) & 0xff
       ..[2] = (this >> 16) & 0xff
       ..[3] = (this >> 8) & 0xff
@@ -135,27 +135,25 @@ class ObjectId {
       );
     }
 
-    final secondsSinceEpoch = int.parse(hexString.substring(0, 8), radix: 16);
-    final millisecondsSinceEpoch = secondsSinceEpoch * 1000;
+    for (var i = 0; i < byteLength; i++) {
+      final o = i * 2;
+      _bytes[i] = (_hexCharToNibble(hexString.codeUnitAt(o)) << 4) |
+          _hexCharToNibble(hexString.codeUnitAt(o + 1));
+    }
 
-    // We need to split this into two parts because bitwise operations in the
-    // web are limited to 32 bits.
-    // https://dart.dev/resources/language/number-representation#bitwise-operations
-    final processUniqueA = int.parse(hexString.substring(8, 10), radix: 16);
-    final processUniqueB = int.parse(hexString.substring(10, 18), radix: 16);
-    final processUnique = Uint8List(ProcessUnique.size)
-      ..[0] = processUniqueA & 0xff
-      ..[1] = (processUniqueB >> 24) & 0xff
-      ..[2] = (processUniqueB >> 16) & 0xff
-      ..[3] = (processUniqueB >> 8) & 0xff
-      ..[4] = processUniqueB & 0xff;
-
-    final counter = int.parse(hexString.substring(18, 24), radix: 16);
-
-    /// cache this value
     _hexString = hexString;
+  }
 
-    _initialize(millisecondsSinceEpoch, processUnique, counter);
+  /// Converts a hex character code to its 4-bit numeric value.
+  @pragma('vm:prefer-inline')
+  static int _hexCharToNibble(int code) {
+    // 0-9: 0x30-0x39
+    if (code >= 0x30 && code <= 0x39) return code - 0x30;
+    // A-F: 0x41-0x46
+    if (code >= 0x41 && code <= 0x46) return code - 0x37;
+    // a-f: 0x61-0x66
+    if (code >= 0x61 && code <= 0x66) return code - 0x57;
+    throw FormatException('Invalid hex character', String.fromCharCode(code));
   }
 
   /// Creates ObjectId from a JSON string.

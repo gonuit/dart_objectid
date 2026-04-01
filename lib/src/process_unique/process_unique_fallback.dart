@@ -12,7 +12,7 @@ class FallbackProcessUnique implements ProcessUnique {
     math.Random? random;
     try {
       random = math.Random.secure();
-    } on UnsupportedError {
+    } catch (_) {
       random = math.Random();
     }
     for (var i = 0; i < bytes.length; i++) {
