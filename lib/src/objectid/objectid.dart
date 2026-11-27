@@ -2,7 +2,35 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import '../hash/murmur_hash_2.dart';
+import '../platform/is_js.dart';
 import '../process_unique/process_unique.dart';
+
+const _hexDigits = '0123456789abcdef';
+
+const _invalidHex = 0x80;
+
+const _upperHex = 0x40;
+
+/// Maps ASCII code units to 4-bit hex values.
+/// Upper case digits are flagged with [_upperHex].
+final Uint8List _hexTable = () {
+  final table = Uint8List(128)..fillRange(0, 128, _invalidHex);
+  for (var i = 0; i < 10; i++) {
+    table[0x30 + i] = i;
+  }
+  for (var i = 0; i < 6; i++) {
+    table[0x61 + i] = 10 + i;
+    table[0x41 + i] = (10 + i) | _upperHex;
+  }
+  return table;
+}();
+
+/// Hex strings of all byte values. Used on JavaScript only.
+final List<String> _byteHex = List<String>.generate(
+  256,
+  (i) => _hexDigits[i >> 4] + _hexDigits[i & 0xf],
+  growable: false,
+);
 
 extension on int {
   /// Converts integer to 5 bytes Uint8List.
@@ -48,7 +76,7 @@ class ObjectId {
   static int _counter = math.Random().nextInt(_counterMask);
 
   /// Get ObjectId counter by incrementing current counter value by 1.
-  /// ObjectId counter cannot be larger than 3 bits.
+  /// ObjectId counter cannot be larger than 3 bytes.
   static int _getCounter() => (_counter = (_counter + 1) % _counterMask);
 
   final Uint8List _bytes = Uint8List(byteLength);
@@ -135,25 +163,45 @@ class ObjectId {
       );
     }
 
+    final table = _hexTable;
+    final bytes = _bytes;
+
+    var codes = 0;
+    var flags = 0;
     for (var i = 0; i < byteLength; i++) {
       final o = i * 2;
-      _bytes[i] = (_hexCharToNibble(hexString.codeUnitAt(o)) << 4) |
-          _hexCharToNibble(hexString.codeUnitAt(o + 1));
+      final highCode = hexString.codeUnitAt(o);
+      final lowCode = hexString.codeUnitAt(o + 1);
+      final high = table[highCode & 0x7f];
+      final low = table[lowCode & 0x7f];
+      codes |= highCode | lowCode;
+      flags |= high | low;
+      bytes[i] = ((high & 0xf) << 4) | (low & 0xf);
     }
 
-    _hexString = hexString;
+    if (codes > 0x7f || (flags & _invalidHex) != 0) {
+      throw _invalidHexCharacter(hexString);
+    }
+
+    // hexString is always lowercase.
+    if ((flags & _upperHex) == 0) _hexString = hexString;
   }
 
-  /// Converts a hex character code to its 4-bit numeric value.
   @pragma('vm:prefer-inline')
-  static int _hexCharToNibble(int code) {
-    // 0-9: 0x30-0x39
-    if (code >= 0x30 && code <= 0x39) return code - 0x30;
-    // A-F: 0x41-0x46
-    if (code >= 0x41 && code <= 0x46) return code - 0x37;
-    // a-f: 0x61-0x66
-    if (code >= 0x61 && code <= 0x66) return code - 0x57;
-    throw FormatException('Invalid hex character', String.fromCharCode(code));
+  static bool _isHexCode(int code) =>
+      code <= 0x7f && _hexTable[code] != _invalidHex;
+
+  static FormatException _invalidHexCharacter(String hexString) {
+    for (var i = 0; i < hexString.length; i++) {
+      final code = hexString.codeUnitAt(i);
+      if (!_isHexCode(code)) {
+        return FormatException(
+          'Invalid hex character',
+          String.fromCharCode(code),
+        );
+      }
+    }
+    return FormatException('Invalid hex string', hexString);
   }
 
   /// Creates ObjectId from a JSON string.
@@ -225,8 +273,12 @@ class ObjectId {
       );
     }
 
-    for (var i = 0; i < byteLength; i++) {
-      _bytes[i] = bytes[i];
+    if (!isJs && bytes is Uint8List) {
+      _bytes.setRange(0, byteLength, bytes);
+    } else {
+      for (var i = 0; i < byteLength; i++) {
+        _bytes[i] = bytes[i];
+      }
     }
   }
 
@@ -237,10 +289,8 @@ class ObjectId {
   DateTime get timestamp {
     if (_timestamp != null) return _timestamp!;
 
-    var secondsSinceEpoch = 0;
-    for (var x = 3, y = 0; x >= 0; x--, y++) {
-      secondsSinceEpoch += _bytes[x] * math.pow(256, y).toInt();
-    }
+    final secondsSinceEpoch = _bytes[0] * 0x1000000 +
+        ((_bytes[1] << 16) | (_bytes[2] << 8) | _bytes[3]);
 
     return _timestamp = DateTime.fromMillisecondsSinceEpoch(
       secondsSinceEpoch * 1000,
@@ -251,15 +301,34 @@ class ObjectId {
 
   /// Returns hex string for current [ObjectId].
   String get hexString {
-    if (_hexString == null) {
-      final buffer = StringBuffer();
-      for (var i = 0; i < _bytes.length; i++) {
-        buffer.write(_bytes[i].toRadixString(16).padLeft(2, '0'));
-      }
-      _hexString = buffer.toString();
-    }
+    return _hexString ??= _createHexString();
+  }
 
-    return _hexString!;
+  String _createHexString() {
+    final bytes = _bytes;
+    if (isJs) {
+      final t = _byteHex;
+      return t[bytes[0]] +
+          t[bytes[1]] +
+          t[bytes[2]] +
+          t[bytes[3]] +
+          t[bytes[4]] +
+          t[bytes[5]] +
+          t[bytes[6]] +
+          t[bytes[7]] +
+          t[bytes[8]] +
+          t[bytes[9]] +
+          t[bytes[10]] +
+          t[bytes[11]];
+    }
+    final codes = Uint8List(hexStringLength);
+    for (var i = 0; i < byteLength; i++) {
+      final byte = bytes[i];
+      final o = i * 2;
+      codes[o] = _hexDigits.codeUnitAt(byte >> 4);
+      codes[o + 1] = _hexDigits.codeUnitAt(byte & 0xf);
+    }
+    return String.fromCharCodes(codes);
   }
 
   @override
@@ -273,16 +342,17 @@ class ObjectId {
 
   /// Whether hexString is a valid ObjectId
   static bool isValid(String hexString) {
-    try {
-      if (hexString.length != 24) return false;
+    if (hexString.length != hexStringLength) return false;
 
-      int.parse(hexString.substring(0, 8), radix: 16);
-      int.parse(hexString.substring(8, 18), radix: 16);
-      int.parse(hexString.substring(18, 24), radix: 16);
-    } on FormatException {
-      return false;
+    final table = _hexTable;
+    var codes = 0;
+    var flags = 0;
+    for (var i = 0; i < hexStringLength; i++) {
+      final code = hexString.codeUnitAt(i);
+      codes |= code;
+      flags |= table[code & 0x7f];
     }
-    return true;
+    return codes <= 0x7f && (flags & _invalidHex) == 0;
   }
 
   /// Caches [hashCode].

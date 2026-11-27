@@ -1,4 +1,3 @@
-import 'dart:io' as io;
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -9,8 +8,12 @@ class ProcessUniqueIo implements ProcessUnique {
   /// 5 bytes
   @override
   Uint8List getValue() {
-    final random =
-        math.Random((DateTime.now().millisecondsSinceEpoch ^ io.pid));
+    math.Random random;
+    try {
+      random = math.Random.secure();
+    } catch (_) {
+      random = math.Random();
+    }
     final bytes = Uint8List(ProcessUnique.size);
     for (var i = 0; i < ProcessUnique.size; i++) {
       bytes[i] = random.nextInt(256);

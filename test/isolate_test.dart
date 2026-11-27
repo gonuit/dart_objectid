@@ -12,6 +12,12 @@ void createObjectId(SendPort sendPort) {
   sendPort.send(id);
 }
 
+String createProcessUnique() => ObjectId().hexString.substring(8, 18);
+
+void sendProcessUnique(SendPort sendPort) {
+  sendPort.send(createProcessUnique());
+}
+
 void main() {
   test(
       'Ensure that after a new process is created through a fork() '
@@ -32,5 +38,22 @@ void main() {
     /// Make sure that ObjectId processUnique is different in isolates.
     expect(id.bytes.sublist(4, 9),
         isNot(equals(idFromIsolate.bytes.sublist(4, 9))));
+  });
+
+  test(
+      'Ensure that isolates spawned at the same time do not share '
+      'the "random number unique to a machine and process".', () async {
+    const isolates = 16;
+    final receivePort = ReceivePort();
+    await Future.wait([
+      for (var i = 0; i < isolates; i++)
+        Isolate.spawn(sendProcessUnique, receivePort.sendPort),
+    ]);
+    final values = await receivePort.take(isolates).cast<String>().toList();
+
+    expect(
+      {...values, createProcessUnique()},
+      hasLength(isolates + 1),
+    );
   });
 }

@@ -1,9 +1,23 @@
 import 'dart:typed_data';
 
+import '../platform/is_js.dart';
+
 /// 'm' and 'r' are mixing constants generated offline.
 /// They're not really 'magic', they just happen to work well.
 const _m = 0x5bd1e995;
 const _r = 24;
+
+const _mask32 = 0xffffffff;
+
+/// 32-bit multiplication by [_m].
+/// Split into 16-bit halves on JavaScript to stay below 2^53.
+@pragma('vm:prefer-inline')
+@pragma('dart2js:prefer-inline')
+@pragma('wasm:prefer-inline')
+int _mul32(int a) => isJs
+    ? ((a & 0xffff) * _m + (((((a >> 16) & 0xffff) * _m) & 0xffff) << 16)) &
+        _mask32
+    : (a * _m) & _mask32;
 
 /// Dart Implementation of MurmurHash2, by Austin Appleby
 ///
@@ -13,23 +27,24 @@ int murmurHash2(Uint8List data, [int seed = 0]) {
   // Initialize the hash to a 'random' value
 
   var len = data.length;
-  var h = seed ^ len;
+  var h = (seed ^ len) & _mask32;
 
   // Mix 4 bytes at a time into the hash
 
   var pointer = 0;
   while (len >= 4) {
-    var k = data[pointer + 3] +
-        data[pointer + 2] * 16 +
-        data[pointer + 1] * 256 +
-        data[pointer] * 4096;
+    var k = (data[pointer] |
+            (data[pointer + 1] << 8) |
+            (data[pointer + 2] << 16) |
+            (data[pointer + 3] << 24)) &
+        _mask32;
 
-    k *= _m;
+    k = _mul32(k);
     k ^= k >> _r;
-    k *= _m;
+    k = _mul32(k);
 
-    h *= _m;
-    h ^= k;
+    h = _mul32(h);
+    h = (h ^ k) & _mask32;
 
     pointer += 4;
     len -= 4;
@@ -69,8 +84,8 @@ int murmurHash2(Uint8List data, [int seed = 0]) {
   // bytes are well-incorporated.
 
   h ^= h >> 13;
-  h *= _m;
+  h = _mul32(h);
   h ^= h >> 15;
 
-  return h;
+  return h & _mask32;
 }

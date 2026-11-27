@@ -1,3 +1,12 @@
+## 4.0.4
+- Fixed `ObjectId.hashCode` collisions for sequentially generated ids. Hash code values have changed.
+- Fixed process unique value being shared between isolates by using `Random.secure()`.
+- Fixed `ObjectId.isValid` accepting strings with a sign or whitespace.
+- `hexString` is now always lowercase, also for ids created from an upper case hex string.
+- Improved performance of `hexString`, `timestamp`, `ObjectId.isValid` and `ObjectId.fromBytes`.
+- Added dart2wasm tests to the CI pipeline.
+- Fixed benchmark and updated its results.
+
 ## 4.0.3
 - Updated dependencies and README.
 - Updated benchmark results.

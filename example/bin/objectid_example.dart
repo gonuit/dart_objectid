@@ -4,7 +4,58 @@ import 'package:objectid/objectid.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:uuid/uuid.dart';
 
-class ObjectIdBenchmark extends BenchmarkBase {
+/// Reports the time of a single [run].
+abstract class Benchmark extends BenchmarkBase {
+  const Benchmark(super.name);
+
+  static const _runs = 1000;
+
+  @override
+  void exercise() {
+    for (var i = 0; i < _runs; i++) {
+      run();
+    }
+  }
+
+  @override
+  double measure() => super.measure() / _runs;
+}
+
+/// Reports the time of [read] for ids without cached values.
+abstract class PropertyBenchmark extends BenchmarkBase {
+  const PropertyBenchmark(super.name);
+
+  static const _batch = 100000;
+  static const _minimumMillis = 2000;
+
+  Object? read(ObjectId id);
+
+  static Object? result;
+
+  @override
+  double measure() {
+    final watch = Stopwatch();
+    var count = -_batch;
+
+    while (watch.elapsedMilliseconds < _minimumMillis) {
+      final ids = List.generate(_batch, (_) => ObjectId());
+
+      // First batch is a warmup.
+      if (count == 0) watch.reset();
+
+      watch.start();
+      for (var i = 0; i < _batch; i++) {
+        result = read(ids[i]);
+      }
+      watch.stop();
+      count += _batch;
+    }
+
+    return watch.elapsedMicroseconds / count;
+  }
+}
+
+class ObjectIdBenchmark extends Benchmark {
   const ObjectIdBenchmark() : super('ObjectId() → ');
 
   static void main() {
@@ -17,7 +68,7 @@ class ObjectIdBenchmark extends BenchmarkBase {
   }
 }
 
-class UuidBenchmark extends BenchmarkBase {
+class UuidBenchmark extends Benchmark {
   const UuidBenchmark() : super('Uuid().v1() → ');
 
   static void main() {
@@ -30,7 +81,7 @@ class UuidBenchmark extends BenchmarkBase {
   }
 }
 
-class UuidBenchmarkV1 extends BenchmarkBase {
+class UuidBenchmarkV1 extends Benchmark {
   const UuidBenchmarkV1() : super('uuid.v1() → ');
 
   final uuid = const Uuid();
@@ -45,7 +96,7 @@ class UuidBenchmarkV1 extends BenchmarkBase {
   }
 }
 
-class UuidBenchmarkV4 extends BenchmarkBase {
+class UuidBenchmarkV4 extends Benchmark {
   const UuidBenchmarkV4() : super('uuid.v4() → ');
 
   final uuid = const Uuid();
@@ -60,7 +111,7 @@ class UuidBenchmarkV4 extends BenchmarkBase {
   }
 }
 
-class FromHexStringBenchmark extends BenchmarkBase {
+class FromHexStringBenchmark extends Benchmark {
   const FromHexStringBenchmark() : super('ObjectId.fromHexString() → ');
 
   static void main() {
@@ -75,27 +126,18 @@ class FromHexStringBenchmark extends BenchmarkBase {
   }
 }
 
-class HexStringBenchmark extends BenchmarkBase {
-  HexStringBenchmark() : super('ObjectId.hexString → ');
+class HexStringBenchmark extends PropertyBenchmark {
+  const HexStringBenchmark() : super('ObjectId.hexString → ');
 
   static void main() {
     HexStringBenchmark().report();
   }
 
-  ObjectId? _objectId;
-
   @override
-  void run() {
-    _objectId!.hexString;
-  }
-
-  @override
-  void setup() {
-    _objectId = ObjectId();
-  }
+  Object? read(ObjectId id) => id.hexString;
 }
 
-class EqualityOperatorBenchmark extends BenchmarkBase {
+class EqualityOperatorBenchmark extends Benchmark {
   EqualityOperatorBenchmark() : super('ObjectId == ObjectId → ');
 
   static void main() {
@@ -117,47 +159,29 @@ class EqualityOperatorBenchmark extends BenchmarkBase {
   }
 }
 
-class TimestampBenchmark extends BenchmarkBase {
-  TimestampBenchmark() : super('ObjectId.timestamp → ');
+class TimestampBenchmark extends PropertyBenchmark {
+  const TimestampBenchmark() : super('ObjectId.timestamp → ');
 
   static void main() {
     TimestampBenchmark().report();
   }
 
-  ObjectId? _objectIdA;
-
   @override
-  void run() {
-    _objectIdA!.timestamp;
-  }
-
-  @override
-  void setup() {
-    _objectIdA = ObjectId();
-  }
+  Object? read(ObjectId id) => id.timestamp;
 }
 
-class HashCodeBenchmark extends BenchmarkBase {
-  HashCodeBenchmark() : super('ObjectId.hashCode → ');
+class HashCodeBenchmark extends PropertyBenchmark {
+  const HashCodeBenchmark() : super('ObjectId.hashCode → ');
 
   static void main() {
     HashCodeBenchmark().report();
   }
 
-  ObjectId? _id;
-
   @override
-  void run() {
-    _id.hashCode;
-  }
-
-  @override
-  void setup() {
-    _id = ObjectId();
-  }
+  Object? read(ObjectId id) => id.hashCode;
 }
 
-class FromBytesBenchmark extends BenchmarkBase {
+class FromBytesBenchmark extends Benchmark {
   FromBytesBenchmark() : super('ObjectId.fromBytes() → ');
 
   static void main() {
@@ -178,7 +202,7 @@ class FromBytesBenchmark extends BenchmarkBase {
   }
 }
 
-class FromValuesBenchmark extends BenchmarkBase {
+class FromValuesBenchmark extends Benchmark {
   FromValuesBenchmark() : super('ObjectId.fromValues() → ');
 
   static void main() {
@@ -191,7 +215,7 @@ class FromValuesBenchmark extends BenchmarkBase {
   }
 }
 
-class FromTimestampBenchmark extends BenchmarkBase {
+class FromTimestampBenchmark extends Benchmark {
   FromTimestampBenchmark() : super('ObjectId.fromTimestamp() → ');
 
   static void main() {

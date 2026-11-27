@@ -109,22 +109,22 @@ Benchmark hardware/software:
 UNIT: MacBook Pro (M4 Pro, 2024)
 CPU: Apple M4 Pro
 RAM: 48 GB
-OS: macOS 26.3.1
-Dart SDK version: 3.11.4
+OS: macOS 27.0.1
+Dart SDK version: 3.14.0
 
 ```
 Constructors:
-ObjectId() → (RunTime): 0.28017946395452636 us.
-ObjectId.fromHexString() → (RunTime): 0.1964833532549569 us.
-ObjectId.fromBytes() → (RunTime): 0.11237176106442358 us.
-ObjectId.fromValues() → (RunTime): 0.02774876977800984 us.
-ObjectId.fromTimestamp() → (RunTime): 0.04264624207353758 us.
+ObjectId() → (RunTime): 0.02908248152573123 us.
+ObjectId.fromHexString() → (RunTime): 0.02177448025519745 us.
+ObjectId.fromBytes() → (RunTime): 0.006863349841625396 us.
+ObjectId.fromValues() → (RunTime): 0.0025167854832145167 us.
+ObjectId.fromTimestamp() → (RunTime): 0.0023754360000000003 us.
 Properties:
-ObjectId.hexString → (RunTime): 0.03615293445770598 us.
-ObjectId.timestamp → (RunTime): 0.03690251970477984 us.
-ObjectId.hashCode → (RunTime): 0.02660910959699762 us.
+ObjectId.hexString → (RunTime): 0.03457450777202072 us.
+ObjectId.timestamp → (RunTime): 0.012784591315453384 us.
+ObjectId.hashCode → (RunTime): 0.008365968214136345 us.
 Operators:
-ObjectId == ObjectId → (RunTime): 0.08761381094863427 us.
+ObjectId == ObjectId → (RunTime): 0.008814199196753013 us.
 ```
 
 Benchmark is available in the example app.

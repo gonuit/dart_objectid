@@ -2,8 +2,8 @@ name: objectid_example
 description: ObjectId example.
 version: 1.0.0
 publish_to: none
-executables: 
-  example: ./bin/example.dart
+executables:
+  example: objectid_example
 
 environment:
   sdk: "^3.0.0"

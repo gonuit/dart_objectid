@@ -128,6 +128,118 @@ void main() {
       expect(ObjectId.isValid(''), isFalse);
     });
 
+    test('isValid accepts upper and mixed case hex strings', () {
+      expect(ObjectId.isValid('5F527E9B350AA5F9709DAF16'), isTrue);
+      expect(ObjectId.isValid('5f527E9b350aA5F9709dAf16'), isTrue);
+    });
+
+    test('isValid rejects signs and whitespace', () {
+      expect(ObjectId.isValid('-0000000000000000000000a'), isFalse);
+      expect(ObjectId.isValid('+0000000000000000000000a'), isFalse);
+      expect(ObjectId.isValid('0000000-000000000+000000'), isFalse);
+      expect(ObjectId.isValid(' 0000000000000000000000 '), isFalse);
+      expect(ObjectId.isValid('00000000 000000000000000'), isFalse);
+      expect(ObjectId.isValid('0x0000000000000000000000'), isFalse);
+    });
+
+    test('non-ASCII characters are rejected', () {
+      final inputs = [
+        '\u0130'.padRight(24, '0'),
+        '\u0130'.padLeft(24, '0'),
+        '0\u00e1\u00b0'.padLeft(24, '0'),
+        '\uff10\uff11\uff12\uff13'.padRight(24, 'a'),
+      ];
+      for (final input in inputs) {
+        expect(input.length, equals(24));
+        expect(ObjectId.isValid(input), isFalse, reason: input);
+        expect(
+          () => ObjectId.fromHexString(input),
+          throwsFormatException,
+          reason: input,
+        );
+      }
+    });
+
+    test('hexString is correct for every byte value', () {
+      for (var i = 0; i < 256; i++) {
+        final bytes = List<int>.generate(12, (j) => (i + j * 23) & 0xff);
+        final expected =
+            bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
+        expect(ObjectId.fromBytes(bytes).hexString, equals(expected));
+        expect(
+          ObjectId.fromBytes(Uint8List.fromList(bytes)).hexString,
+          equals(expected),
+        );
+        expect(ObjectId.fromHexString(expected).bytes, equals(bytes));
+        expect(
+          ObjectId.fromHexString(expected.toUpperCase()).bytes,
+          equals(bytes),
+        );
+      }
+    });
+
+    test('fromBytes copies provided bytes', () {
+      final bytes = Uint8List.fromList(
+        [95, 82, 205, 121, 180, 195, 28, 88, 32, 47, 183, 78],
+      );
+      final id = ObjectId.fromBytes(bytes);
+      bytes[0] = 0;
+
+      expect(id.bytes[0], equals(95));
+      expect(() => ObjectId.fromBytes(Uint8List(11)), throwsArgumentError);
+      expect(() => ObjectId.fromBytes(Uint8List(13)), throwsArgumentError);
+    });
+
+    test('isValid agrees with fromHexString', () {
+      const inputs = [
+        '5f527e9b350aa5f9709daf16',
+        '5F527E9B350AA5F9709DAF16',
+        '-0000000000000000000000a',
+        ' 0000000000000000000000 ',
+        'gggggggggggggggggggggggg',
+        'fffffffffffffffffffffff',
+      ];
+      for (final input in inputs) {
+        var parsed = true;
+        try {
+          ObjectId.fromHexString(input);
+        } catch (_) {
+          parsed = false;
+        }
+        expect(ObjectId.isValid(input), equals(parsed), reason: input);
+      }
+    });
+
+    test('hexString is lowercase for upper case input', () {
+      const upper = '5F527E9B350AA5F9709DAF16';
+      const lower = '5f527e9b350aa5f9709daf16';
+
+      final fromUpper = ObjectId.fromHexString(upper);
+      final fromBytes = ObjectId.fromBytes(fromUpper.bytes);
+
+      expect(fromUpper, equals(fromBytes));
+      expect(fromUpper.hexString, equals(lower));
+      expect(fromUpper.toString(), equals(lower));
+      expect(fromUpper.toJson(), equals(lower));
+      expect(fromUpper.hexString, equals(fromBytes.hexString));
+      expect(ObjectId.fromHexString('5f527E9b350aA5F9709dAf16').hexString,
+          equals(lower));
+      expect(ObjectId.fromHexString(lower).hexString, equals(lower));
+    });
+
+    test('hashCode is well distributed for sequential ids', () {
+      const count = 100000;
+      final hashes = <int>{};
+      for (var i = 0; i < count; i++) {
+        hashes.add(
+          ObjectId.fromValues(1700000000000, 0x1122334455, i).hashCode,
+        );
+      }
+
+      expect(hashes.length, greaterThan(count - 100));
+    });
+
     test('HashCode works correctly', () {
       var checksToBeDone = 1000;
       var id = ObjectId();

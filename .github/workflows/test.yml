@@ -21,15 +21,23 @@ jobs:
         run: dart analyze --fatal-infos
 
   test:
-    name: Tests (${{ matrix.platform }})
+    name: Tests (${{ matrix.name }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [vm, chrome, node]
+        include:
+          - name: vm
+            args: -p vm
+          - name: chrome
+            args: -p chrome
+          - name: node
+            args: -p node
+          - name: chrome, dart2wasm
+            args: -p chrome -c dart2wasm
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
       - name: Install dependencies
         run: dart pub get
       - name: Run tests
-        run: dart test -p ${{ matrix.platform }}
+        run: dart test ${{ matrix.args }}
